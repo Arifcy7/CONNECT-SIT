@@ -19,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.connectsit.R
 import com.example.connectsit.model.Enterers
-import com.example.connectsit.navigation.ScreenB
 
 // moved this composable to its own file to remove clutter in MainActivity
 @Composable
