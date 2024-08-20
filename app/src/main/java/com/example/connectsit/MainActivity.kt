@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,6 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.connectsit.ui.theme.CONNECTSITTheme
 import com.example.connectsit.ui.theme.LoginScreen
+import com.example.connectsit.ui.theme.TeacherPortal
 import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
@@ -50,19 +53,7 @@ class MainActivity : ComponentActivity() {
                 startDestination = ScreenA
             ) {
                 composable<ScreenA> {
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.img),
-                            contentDescription = "SOME ERROR OCCURED",
-                            modifier = Modifier
-                                .align(Alignment.TopCenter)
-                                .padding(top = 16.dp)
-                                .size(32.dp)
-                        )
-
-                        Column(
+                    Column(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(color = Color.Black),
@@ -71,23 +62,25 @@ class MainActivity : ComponentActivity() {
                         )
 
                         {
+                            Image(
+                                painter = painterResource(id = R.drawable.img),
+                                contentDescription = "Login image",
+                                modifier = Modifier.size(200.dp)
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
                             Button(onClick = {
                                 navController.navigate(
                                     ScreenB(
                                         name = "STUDENT",
                                     )
                                 )
-                            }
+                            }, colors = ButtonDefaults.buttonColors(containerColor = Color.Blue, contentColor = Color.White)
                             ) {
                                 Text(text = "STUDENT")
                             }
 
-                        }
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                            Spacer(modifier = Modifier.height(16.dp))
+
                             Button(onClick = {
                                 navController.navigate(
                                     ScreenB(
@@ -95,17 +88,21 @@ class MainActivity : ComponentActivity() {
 
                                         )
                                 )
-                            }) {
+                            }, colors = ButtonDefaults.buttonColors(containerColor = Color.Blue, contentColor = Color.White)
+                            ) {
                                 Text(text = "TEACHERS")
                             }
-                            Spacer(modifier = Modifier.height(110.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
-                }
+
                 composable<ScreenB> {
                     val args = it.toRoute<ScreenB>()
                        LoginScreen(enterer = args.name)
                     }
+                composable<ScreenC> {
+                    TeacherPortal()
+                }
                 }
             }
         }
@@ -118,4 +115,5 @@ class MainActivity : ComponentActivity() {
     data class ScreenB(
         val name: String?
     )
-
+    @Serializable
+    data object ScreenC
