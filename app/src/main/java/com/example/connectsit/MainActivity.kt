@@ -4,43 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.internal.composableLambda
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.connectsit.ui.theme.CONNECTSITTheme
-import com.example.connectsit.ui.theme.LoginScreen
-import com.example.connectsit.ui.theme.TeacherPortal
-import kotlinx.serialization.Serializable
+import com.example.connectsit.model.Enterers
+import com.example.connectsit.navigation.ScreenA
+import com.example.connectsit.navigation.ScreenB
+import com.example.connectsit.navigation.ScreenC
+import com.example.connectsit.navigation.ScreenD
+import com.example.connectsit.screens.LoginScreen
+import com.example.connectsit.screens.StudentPortalScreen
+import com.example.connectsit.screens.StudentTeacherDeterminerScreen
+import com.example.connectsit.screens.TeacherPortalScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,68 +28,46 @@ class MainActivity : ComponentActivity() {
                 navController = navController,
                 startDestination = ScreenA
             ) {
+                // Moved all screens to its own file to reduce clutter
                 composable<ScreenA> {
-                    Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(color = Color.Black),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        )
-
-                        {
-                            Image(
-                                painter = painterResource(id = R.drawable.img),
-                                contentDescription = "Login image",
-                                modifier = Modifier.size(200.dp)
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Button(onClick = {
-                                navController.navigate(
-                                    ScreenB(
-                                        name = "STUDENT",
-                                    )
-                                )
-                            }, colors = ButtonDefaults.buttonColors(containerColor = Color.Blue, contentColor = Color.White)
-                            ) {
-                                Text(text = "STUDENT")
-                            }
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            Button(onClick = {
-                                navController.navigate(
-                                    ScreenB(
-                                        name = "TEACHER",
-
-                                        )
-                                )
-                            }, colors = ButtonDefaults.buttonColors(containerColor = Color.Blue, contentColor = Color.White)
-                            ) {
-                                Text(text = "TEACHERS")
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
+                    StudentTeacherDeterminerScreen(
+                        handleNavigation = { enterer ->
+                            navController.navigate(ScreenB(enterer.value))
                         }
-                    }
+                    )
+                }
 
                 composable<ScreenB> {
                     val args = it.toRoute<ScreenB>()
-                       LoginScreen(enterer = args.name)
+                    // based on the argument given determines our Enterer
+                    val enterer = when (args.name) {
+                        "STUDENT" -> Enterers.STUDENT
+                        "TEACHER" -> Enterers.TEACHER
+                        else -> Enterers.TEACHER
                     }
-                composable<ScreenC> {
-                    TeacherPortal()
+                    LoginScreen(
+                        enterer = enterer,
+                        handleLogin = { username, password ->
+                            when (enterer) {
+                                Enterers.TEACHER -> {
+                                    navController.navigate(ScreenC)
+                                }
+
+                                Enterers.STUDENT -> {
+                                    navController.navigate(ScreenD)
+                                }
+                            }
+                        }
+                    )
                 }
+                composable<ScreenC> {
+                    TeacherPortalScreen()
+                }
+
+                composable<ScreenD> {
+                    StudentPortalScreen()
                 }
             }
         }
     }
-
-    @Serializable
-    object ScreenA
-
-    @Serializable
-    data class ScreenB(
-        val name: String?
-    )
-    @Serializable
-    data object ScreenC
+}
