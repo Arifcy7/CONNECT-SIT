@@ -10,9 +10,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.connectsit.ui.screen.LogInScreenRoute
 import com.example.connectsit.ui.screen.OptionChoosingScreenRoute
+import com.example.connectsit.ui.screen.StudentPortalRoute
 import com.example.connectsit.ui.screen.TeacherScreenRoute
 import com.example.connectsit.ui.screen.auth.LoginScreen
 import com.example.connectsit.ui.screen.auth.OptionChoosingScreen
+import com.example.connectsit.ui.screen.student.StudentPortal
 import com.example.connectsit.ui.screen.teacher.TeacherPortal
 
 class MainActivity : ComponentActivity() {
@@ -35,6 +37,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable<TeacherScreenRoute> {
                     TeacherPortal()
+                }
+                composable<StudentPortalRoute> {
+                    StudentPortal()
                 }
             }
         }

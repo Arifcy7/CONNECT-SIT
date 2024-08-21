@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,12 +41,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.connectsit.R
+import com.example.connectsit.ui.screen.StudentPortalRoute
 import com.example.connectsit.ui.screen.TeacherScreenRoute
 
 
 @Composable
 fun LoginScreen(enterer: String?, navController: NavHostController) {
-//    val navController = rememberNavController() // no need creating nav controller
 
     val textColor1 = Color(color = 0xFFFFFFFF)
     var email by remember { mutableStateOf(value = "") }
@@ -131,8 +132,9 @@ fun LoginScreen(enterer: String?, navController: NavHostController) {
                 if (enterer == "TEACHER" && email == "apsit" && password == "123") {
                     navController.navigate(TeacherScreenRoute)// navigate to teacher screen
                 } else if (enterer == "STUDENT" && email == "apsit" && password == "123") {
-                    // Handle login action here
+                    navController.navigate(StudentPortalRoute)
                 }
+
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue, // Background color
