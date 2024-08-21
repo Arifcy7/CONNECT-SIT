@@ -10,6 +10,3 @@ data class LogInScreenRoute(val name:String)
 
 @Serializable
 object OptionChoosingScreenRoute
-
-@Serializable
-object StudentPortalRoute
