@@ -8,15 +8,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.connectsit.model.Enterers
+import com.example.connectsit.ui.model.Enterers
 import com.example.connectsit.navigation.ScreenA
 import com.example.connectsit.navigation.ScreenB
 import com.example.connectsit.navigation.ScreenC
 import com.example.connectsit.navigation.ScreenD
-import com.example.connectsit.screens.LoginScreen
-import com.example.connectsit.screens.StudentPortalScreen
-import com.example.connectsit.screens.StudentTeacherDeterminerScreen
-import com.example.connectsit.screens.TeacherPortalScreen
+import com.example.connectsit.ui.screens.auth.LoginScreen
+import com.example.connectsit.ui.screens.student.StudentPortalScreen
+import com.example.connectsit.ui.screens.auth.StudentTeacherDeterminerScreen
+import com.example.connectsit.ui.screens.teacher.TeacherPortalScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

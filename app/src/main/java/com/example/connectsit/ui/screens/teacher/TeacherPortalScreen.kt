@@ -1,4 +1,4 @@
-package com.example.connectsit.screens
+package com.example.connectsit.ui.screens.teacher
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,12 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun StudentPortalScreen() {
+fun TeacherPortalScreen() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Student Portal")
+        Text(text = "Teacher Portal")
     }
 }

@@ -1,4 +1,4 @@
-package com.example.connectsit.ui.theme
+package com.example.connectsit.core.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.connectsit.screens
+package com.example.connectsit.ui.screens.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,8 +38,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.connectsit.R
-import com.example.connectsit.model.Enterers
-import com.example.connectsit.ui.theme.White
+import com.example.connectsit.ui.model.Enterers
+import com.example.connectsit.core.theme.White
 
 typealias Username = String
 typealias Password = String
@@ -50,7 +50,7 @@ fun LoginScreen(
     // Created Enum to safely determine which user/enterer we are displaying for
     enterer: Enterers,
     // create anonymous function to pass back navigation to MainActivity
-    handleLogin: ( Username, Password) -> Unit
+    handleLogin: (Username, Password) -> Unit
 ) {
     val email = remember { mutableStateOf(value = "") }
     val password = remember { mutableStateOf(value = "") }
