@@ -17,17 +17,25 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextFieldDefaults
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import com.example.connectsit.R.drawable.*
 import androidx.compose.foundation.Image as Image
 import androidx.compose.ui.res.painterResource as painterResource1
+import androidx.compose.ui.platform.LocalFocusManager
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,6 +65,9 @@ fun StudentDetails() {
             Text(text = "Student Details Form", fontSize = 24.sp)
         OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next
+            ),
             textStyle = TextStyle(color = Color.White),
             value = studentname,
                 onValueChange = { studentname = it },
@@ -65,6 +76,7 @@ fun StudentDetails() {
                 Color.White, // Input text color
                 focusedBorderColor = Color.Blue, // Border color when focused
                 unfocusedBorderColor = Color.White // Border color when not focused
+
             )
 
             )
@@ -72,6 +84,9 @@ fun StudentDetails() {
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Next
+                ),
                 textStyle = TextStyle(color = Color.White),
 
                 value = studentusername,
@@ -86,6 +101,9 @@ fun StudentDetails() {
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Next
+                ),
                 textStyle = TextStyle(color = Color.White),
                 value = studentpassword,
                 onValueChange = { studentpassword = it },
@@ -100,6 +118,9 @@ fun StudentDetails() {
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                ),
                 textStyle = TextStyle(color = Color.White),
                 value = studentmobileNumber,
                 onValueChange = { studentmobileNumber = it },

@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextFieldDefaults
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import com.example.connectsit.R.drawable.*
 import androidx.compose.foundation.Image as Image
 import androidx.compose.ui.res.painterResource as painterResource1
@@ -56,6 +58,11 @@ fun TeacherDetails() {
         Text(text = "Student Details Form", fontSize = 24.sp)
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.run {
+                Default.copy(
+                        imeAction = ImeAction.Next
+                    )
+            },
             textStyle = TextStyle(color = Color.White),
             value = TeacherName,
             onValueChange = { TeacherName = it },
@@ -71,6 +78,9 @@ fun TeacherDetails() {
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next
+            ),
             textStyle = TextStyle(color = Color.White),
 
             value = TeacherUsername,
@@ -85,6 +95,9 @@ fun TeacherDetails() {
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next
+            ),
             textStyle = TextStyle(color = Color.White),
             value = TeacherPassword,
             onValueChange = { TeacherPassword = it },
@@ -99,6 +112,9 @@ fun TeacherDetails() {
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
             textStyle = TextStyle(color = Color.White),
             value = TeacherMobileNumber,
             onValueChange = { TeacherMobileNumber = it },
