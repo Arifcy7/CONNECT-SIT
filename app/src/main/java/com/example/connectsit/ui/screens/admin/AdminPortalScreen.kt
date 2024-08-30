@@ -1,4 +1,5 @@
-package com.example.connectsit.ui.screens.auth
+package com.example.connectsit.ui.screens.admin
+
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,70 +18,63 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.connectsit.R
-import com.example.connectsit.ui.model.Enterers
+import com.example.connectsit.navigation.ScreenF
 
-// moved this composable to its own file to remove clutter in MainActivity
+
 @Composable
-fun StudentTeacherDeterminerScreen(
-    // create anonymous function to pass back navigation to MainActivity
-    handleNavigation: (Enterers) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Black),
+fun AdminPortalScreen(NavController: NavController)  {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(color = Color.Black),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    )
-
-    {
+        horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             painter = painterResource(id = R.drawable.img),
             contentDescription = "Login image",
             modifier = Modifier.size(200.dp)
         )
         Spacer(modifier = Modifier.height(20.dp))
-        Button( modifier = Modifier.size(width = 120.dp, height = 40.dp),
+        Button( modifier = Modifier.size(width = 150.dp, height = 40.dp),
             onClick = {
-                // Created Enum to safely determine which user/enterer we are displaying for
-                handleNavigation(Enterers.STUDENT)
+                NavController.navigate(ScreenF)
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue,
                 contentColor = Color.White
             )
         ) {
-            Text(text = "STUDENT")
+            Text(text = "ADD STUDENT")
         }
 
         Spacer(modifier = Modifier.height(20.dp))
-
-        Button( modifier = Modifier.size(width = 120.dp, height = 40.dp),
+        Button( modifier = Modifier.size(width = 150.dp, height = 40.dp),
             onClick = {
-                // Created Enum to safely determine which user/enterer we are displaying for
-                handleNavigation(Enterers.TEACHER)
+
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue,
                 contentColor = Color.White
             )
         ) {
-            Text(text = "TEACHERS")
+            Text( text = "ADD TEACHER")
         }
-        Spacer(modifier = Modifier.height(20.dp))
 
-        Button( modifier = Modifier.size(width = 120.dp, height = 40.dp),
+        Spacer(modifier = Modifier.height(20.dp))
+        Button( modifier = Modifier.size(width = 150.dp, height = 40.dp),
             onClick = {
-                // Created Enum to safely determine which user/enterer we are displaying for
-                handleNavigation(Enterers.ADMIN)
+
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue,
                 contentColor = Color.White
             )
         ) {
-            Text(text = "ADMIN")
+            Text( text = "MANAGE ALL")
         }
     }
+
 }
+
+
