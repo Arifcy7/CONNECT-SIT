@@ -64,7 +64,7 @@ fun StudentDetails() {
         Spacer(modifier = androidx.compose.ui.Modifier.height(20.dp))
             Text(text = "Student Details Form", fontSize = 24.sp)
         OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Next
             ),
@@ -83,7 +83,7 @@ fun StudentDetails() {
 
 
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next
                 ),
@@ -100,7 +100,7 @@ fun StudentDetails() {
             )
 
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next
                 ),
@@ -117,7 +117,7 @@ fun StudentDetails() {
             )
 
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 ),
@@ -133,7 +133,7 @@ fun StudentDetails() {
 
             )
             Spacer(modifier = androidx.compose.ui.Modifier.height(20.dp))
-            Button( modifier = androidx.compose.ui.Modifier.size(width = 120.dp, height = 40.dp),
+            Button( modifier = androidx.compose.ui.Modifier.size(width = 170.dp, height = 50.dp),
                 onClick = {
 
                 },
