@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.connectsit.R
 import com.example.connectsit.navigation.ScreenF
+import com.example.connectsit.navigation.ScreenG
 
 
 @Composable
@@ -51,7 +52,7 @@ fun AdminPortalScreen(NavController: NavController)  {
         Spacer(modifier = Modifier.height(20.dp))
         Button( modifier = Modifier.size(width = 150.dp, height = 40.dp),
             onClick = {
-
+                  NavController.navigate(ScreenG)
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue,
@@ -64,7 +65,7 @@ fun AdminPortalScreen(NavController: NavController)  {
         Spacer(modifier = Modifier.height(20.dp))
         Button( modifier = Modifier.size(width = 150.dp, height = 40.dp),
             onClick = {
-
+              //NOT MADE YET
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue,

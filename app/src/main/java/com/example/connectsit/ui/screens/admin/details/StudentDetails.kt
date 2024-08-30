@@ -22,15 +22,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextFieldDefaults
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.example.connectsit.R
-import com.example.connectsit.R.drawable
 import com.example.connectsit.R.drawable.*
-import com.example.connectsit.core.theme.White
 import androidx.compose.foundation.Image as Image
 import androidx.compose.ui.res.painterResource as painterResource1
 

@@ -29,3 +29,6 @@ data object ScreenE
 //StudentDetails
 @Serializable
 object ScreenF
+
+@Serializable
+object ScreenG

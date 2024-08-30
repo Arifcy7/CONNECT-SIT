@@ -15,11 +15,13 @@ import com.example.connectsit.navigation.ScreenC
 import com.example.connectsit.navigation.ScreenD
 import com.example.connectsit.navigation.ScreenE
 import com.example.connectsit.navigation.ScreenF
+import com.example.connectsit.navigation.ScreenG
 import com.example.connectsit.ui.screens.auth.LoginScreen
 import com.example.connectsit.ui.screens.student.StudentPortalScreen
 import com.example.connectsit.ui.screens.auth.StudentTeacherDeterminerScreen
 import com.example.connectsit.ui.screens.admin.AdminPortalScreen
 import com.example.connectsit.ui.screens.admin.details.StudentDetails
+import com.example.connectsit.ui.screens.admin.details.TeacherDetails
 import com.example.connectsit.ui.screens.teacher.TeacherPortalScreen
 
 class MainActivity : ComponentActivity() {
@@ -79,6 +81,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable<ScreenF> {
                     StudentDetails()
+                }
+                composable<ScreenG> {
+                    TeacherDetails()
                 }
             }
         }
