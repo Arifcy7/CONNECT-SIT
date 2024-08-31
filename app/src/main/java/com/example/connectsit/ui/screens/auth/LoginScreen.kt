@@ -197,5 +197,10 @@ fun ForgotPasswordText(enterer: Enterers) {
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
+        Enterers.ADMIN -> {
+            Text(
+                modifier = Modifier.clickable { },
+                text = "FORGET PASSWORD?", color = White)
+        }
     }
 }
