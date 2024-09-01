@@ -32,3 +32,6 @@ object ScreenF
 
 @Serializable
 object ScreenG
+
+@Serializable
+object ScreenH
