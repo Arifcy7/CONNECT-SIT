@@ -217,7 +217,7 @@ fun StudentDetails(NavController : NavController) {
                                         println("Data uploaded successfully")
                                         Log.d("FireStore", "StudentDetails Uploaded Successfully")
                                         Toast.makeText(context,
-                                            "STUDENT ADDED SUCCESSFULLY!!",
+                                            "ADDED SUCCESSFULLY!",
                                             Toast.LENGTH_LONG).show()
 
                                     }
