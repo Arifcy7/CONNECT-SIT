@@ -3,7 +3,8 @@
 <style name="Theme.CONNECTSIT" parent="android:Theme.Material.Light.NoActionBar">
     <item name="android:windowBackground">@color/black</item>
     <item name="android:colorBackground">@color/black</item>
-    <item name="android:delay">1000</item>
+    <item name="android:delay">3000</item>
+    <item name="android:backdropColor">@color/black</item>
 </style>
 
 

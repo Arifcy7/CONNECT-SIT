@@ -24,8 +24,10 @@ import com.example.connectsit.ui.screens.admin.details.StudentDetails
 import com.example.connectsit.ui.screens.admin.details.TeacherDetails
 import com.example.connectsit.ui.screens.teacher.TeacherPortalScreen
 import android.app.Application
+import android.widget.Toast
 import androidx.navigation.toRoute
 import com.google.firebase.FirebaseApp
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,8 +65,13 @@ class MainActivity : ComponentActivity() {
                                 Enterers.STUDENT -> {
                                     navController.navigate(ScreenD)
                                 }
-                                Enterers.ADMIN -> {
-                                    navController.navigate(ScreenE)
+                                Enterers.ADMIN -> { if (username=="apsit" && password=="123")
+                                {navController.navigate(ScreenE)}
+                                    else
+                                    {
+                                       Toast.makeText(this@MainActivity, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+
+                                    }
                                 }
                             }
                         }
@@ -82,10 +89,10 @@ class MainActivity : ComponentActivity() {
                     AdminPortalScreen(navController)
                 }
                 composable<ScreenF> {
-                    StudentDetails()
+                    StudentDetails(navController)
                 }
                 composable<ScreenG> {
-                    TeacherDetails()
+                    TeacherDetails(navController)
                 }
             }
         }
