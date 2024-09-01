@@ -1,5 +1,6 @@
 package com.example.connectsit.ui.screens.admin.details
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.connectsit.R
 import com.example.connectsit.ui.screens.admin.details.rules.Validator
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,6 +63,9 @@ fun TeacherDetails() {
             usernameError == null &&
             passwordError == null &&
             emailError == null
+
+    val firestore = FirebaseFirestore.getInstance()
+    val auth = FirebaseAuth.getInstance()
 
     Column(
         modifier = Modifier
@@ -174,11 +180,41 @@ fun TeacherDetails() {
 
         Spacer(modifier = Modifier.height(20.dp))
         Button(
-            onClick = { /* Handle Save button click */ },
+            onClick = {
+                if (isFormValid) {
+                    // Register user with Firebase Authentication
+                    auth.createUserWithEmailAndPassword(TeacherEmailID, TeacherPassword)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val user = auth.currentUser
+                                val userData = mapOf(
+                                    "name" to TeacherName,
+                                    "username" to TeacherUsername,
+                                    "email" to TeacherEmailID,
+                                    "password" to TeacherPassword
+                                )
+
+                                firestore.collection("teachers")
+                                    .document(user?.uid ?: "")
+                                    .set(userData)
+                                    .addOnSuccessListener {
+                                        println("Data uploaded successfully")
+                                        Log.d("FireStore" ,"TeacherDetails: Uploaded Successfully ")
+                                    }
+                                    .addOnFailureListener {
+                                        println("Error uploading data: ${it.message}")
+                                        Log.w("FireStore", "Error Adding Details", it )
+                                    }
+                            } else {
+                                println("Error registering user: ${task.exception?.message}")
+                                Log.w("FirebaseAuth", "Error Registering User", task.exception)
+                            }
+                        }
+                }
+            },
             modifier = Modifier.size(width = 170.dp, height = 50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Blue, contentColor = Color.White),
-            enabled = isFormValid // Enable button only when the form is valid
-
+            enabled = isFormValid
         ) {
             Text(text = "SAVE")
         }
