@@ -1,6 +1,7 @@
 package com.example.connectsit.ui.screens.teacher
 
 
+
 import androidx.compose.material.icons.Icons
 
 import androidx.compose.material.icons.filled.Menu
@@ -28,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 fun TeacherPortalScreen() {
     val Bluish = Color(0xFF523EC8)
     val i = 0
-    val ModuleCounter = 1
+    var ModuleCounter = 1
     val Modules = listOf("Module 1", "Module 2", "Module 3", "Module 4", "Module 5")
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -58,12 +59,13 @@ fun TeacherPortalScreen() {
                     }
                 },
                 scrollBehavior = scrollBehavior,
+
             )
         },
+
     ) { innerPadding ->
         (innerPadding)
     }
-
 
 
 }
