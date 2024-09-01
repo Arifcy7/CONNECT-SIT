@@ -2,27 +2,15 @@
 
 package com.example.connectsit.ui.screens.auth
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -40,26 +28,46 @@ import androidx.compose.ui.unit.sp
 import com.example.connectsit.R
 import com.example.connectsit.ui.model.Enterers
 import com.example.connectsit.core.theme.White
+import kotlinx.coroutines.delay
 
 typealias Username = String
 typealias Password = String
 
-
 @Composable
 fun LoginScreen(
-    // Created Enum to safely determine which user/enterer we are displaying for
     enterer: Enterers,
-    // create anonymous function to pass back navigation to MainActivity
-    handleLogin: (Username, Password) -> Unit
+    handleLogin: (Username, Password, (Boolean) -> Unit) -> Unit
 ) {
     val email = remember { mutableStateOf(value = "") }
     val password = remember { mutableStateOf(value = "") }
     val emailFocusRequester = FocusRequester()
     val passwordFocusRequester = FocusRequester()
+    val loginFailed = remember { mutableStateOf(false) }
+
+    // Shake animation
+    val shakeAnimation = rememberInfiniteTransition()
+    val shakeOffset by shakeAnimation.animateFloat(
+        initialValue = 0f,
+        targetValue = if (loginFailed.value) 10f else 0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(50, easing = FastOutLinearInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    LaunchedEffect(loginFailed.value) {
+        if (loginFailed.value) {
+            delay(3000) // 3 seconds
+            loginFailed.value = false
+        }
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Black),
+            .background(color = Color.Black)
+            .offset(x = if (loginFailed.value) shakeOffset.dp else 0.dp), // Apply the shake offset
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -77,27 +85,29 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "LOGIN AS $enterer", color = White)
         Spacer(modifier = Modifier.height(16.dp))
-        //Created composable to reduce clutter
+
         EmailTextField(
             email = email,
             emailFocusRequester = emailFocusRequester,
             passwordFocusRequester = passwordFocusRequester
         )
         Spacer(modifier = Modifier.height(16.dp))
-        //Created composable to reduce clutter
+
         PasswordTextField(
             password = password,
             passwordFocusRequester = passwordFocusRequester
         )
         Spacer(modifier = Modifier.height(16.dp))
-        //Created composable to reduce clutter
+
         LoginButton(
             onClick = {
-                //Consider error handling via UI on callback by passing callback: () -> Unit in handle login fn
-                handleLogin(email.value, password.value)
+                handleLogin(email.value, password.value) { success ->
+                    loginFailed.value = !success // Trigger shake animation on failure
+                }
             }
         )
         Spacer(modifier = Modifier.height(16.dp))
+
         ForgotPasswordText(enterer = enterer)
     }
 }
@@ -110,7 +120,6 @@ fun EmailTextField(
 ) {
     OutlinedTextField(
         value = email.value,
-
         onValueChange = { email.value = it },
         label = {
             Text(text = "Email Address", color = White)
@@ -124,10 +133,10 @@ fun EmailTextField(
         ),
         modifier = Modifier
             .focusRequester(emailFocusRequester)
-
             .onFocusChanged { focusState ->
-                White
-            }, textStyle = TextStyle(color = White),
+                // No operation needed
+            },
+        textStyle = TextStyle(color = White),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             White, // Input text color
             focusedBorderColor = Color.Blue, // Border color when focused
@@ -149,7 +158,6 @@ fun PasswordTextField(
         label = {
             Text(text = "PASSWORD", color = White)
         },
-
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Password
@@ -200,7 +208,8 @@ fun ForgotPasswordText(enterer: Enterers) {
         Enterers.ADMIN -> {
             Text(
                 modifier = Modifier.clickable { },
-                text = "FORGET PASSWORD?", color = White)
+                text = "FORGET PASSWORD?", color = White
+            )
         }
     }
 }

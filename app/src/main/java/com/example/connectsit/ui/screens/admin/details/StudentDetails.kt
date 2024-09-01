@@ -210,7 +210,7 @@ fun StudentDetails(NavController : NavController) {
                                     "password" to studentPassword
                                 )
 
-                                firestore.collection("students")
+                                firestore.collection("Students")
                                     .document(user?.uid ?: "")
                                     .set(userData)
                                     .addOnSuccessListener {

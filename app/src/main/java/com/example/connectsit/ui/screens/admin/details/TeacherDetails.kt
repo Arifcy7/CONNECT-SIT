@@ -199,7 +199,7 @@ fun TeacherDetails(NavController : NavController) {
         Button(
             onClick = {
                 Toast.makeText(context,
-                    "STUDENT ADDED SUCCESSFULLY!!",
+                    "TEACHER ADDED SUCCESSFULLY!!",
                     Toast.LENGTH_LONG).show()
                 NavController.navigate(ScreenE)
 
@@ -216,7 +216,7 @@ fun TeacherDetails(NavController : NavController) {
                                     "password" to TeacherPassword
                                 )
 
-                                firestore.collection("teachers")
+                                firestore.collection("Teachers")
                                     .document(user?.uid ?: "")
                                     .set(userData)
                                     .addOnSuccessListener {
