@@ -1,5 +1,6 @@
 package com.example.connectsit.ui.screens.admin.details
 
+import android.widget.Toast
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,22 +28,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.connectsit.R
+import com.example.connectsit.navigation.ScreenE
 import com.example.connectsit.ui.screens.admin.details.rules.Validator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-@Preview
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeacherDetails() {
-
+fun TeacherDetails(NavController : NavController) {
+    val context  = LocalContext.current
     var TeacherName by remember { mutableStateOf("") }
     var TeacherUsername by remember { mutableStateOf("") }
     var TeacherPassword by remember { mutableStateOf("") }
@@ -88,6 +93,9 @@ fun TeacherDetails() {
                 nameError = Validator.validateName(it) // Validate name
             },
             label = { Text("Name", color = Color.White) },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next,
+            ),
             isError = nameError != null,
             textStyle = TextStyle(color = Color.White),
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -109,6 +117,9 @@ fun TeacherDetails() {
                 usernameError = Validator.validateUsername(it) // Validate username
             },
             label = { Text("Username", color = Color.White) },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next,
+            ),
             isError = usernameError != null,
             textStyle = TextStyle(color = Color.White),
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -130,6 +141,9 @@ fun TeacherDetails() {
                 passwordError = Validator.validatePassword(it) // Validate password
             },
             label = { Text("Password", color = Color.White) },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next,
+            ),
             textStyle = TextStyle(color = Color.White),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Blue,
@@ -164,6 +178,9 @@ fun TeacherDetails() {
                 emailError = Validator.validateEmail(it) // Validate email
             },
             label = { Text("Email", color = Color.White) },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done,
+            ),
             textStyle = TextStyle(color = Color.White),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Blue,
@@ -181,6 +198,11 @@ fun TeacherDetails() {
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
+                Toast.makeText(context,
+                    "STUDENT ADDED SUCCESSFULLY!!",
+                    Toast.LENGTH_LONG).show()
+                NavController.navigate(ScreenE)
+
                 if (isFormValid) {
                     // Register user with Firebase Authentication
                     auth.createUserWithEmailAndPassword(TeacherEmailID, TeacherPassword)
