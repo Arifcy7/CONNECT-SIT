@@ -82,10 +82,10 @@ class MainActivity : ComponentActivity() {
                     AdminPortalScreen(navController)
                 }
                 composable<ScreenF> {
-                    StudentDetails()
+                    StudentDetails(navController)
                 }
                 composable<ScreenG> {
-                    TeacherDetails()
+                    TeacherDetails(navController)
                 }
             }
         }
