@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "199361118953",
+    "project_id": "connecs-it",
+    "storage_bucket": "connecs-it.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199361118953:android:4dc002299c6010126f6678",
+        "android_client_info": {
+          "package_name": "com.example.connectsit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkNcGcsbzwJf0GG1XeEg-GyZjuzbweFEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
