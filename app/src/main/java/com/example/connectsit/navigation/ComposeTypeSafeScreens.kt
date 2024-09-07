@@ -35,3 +35,11 @@ object ScreenG
 
 @Serializable
 object ScreenH
+
+//student manage
+@Serializable
+object ScreenI
+
+//teacher manage
+@Serializable
+object ScreenJ
