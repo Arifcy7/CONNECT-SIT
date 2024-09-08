@@ -2,7 +2,6 @@ package com.example.connectsit.ui.util
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.ViewModelInitializer
 
 fun <VM: ViewModel> viewModelFactory(initializer: () -> VM): ViewModelProvider.Factory {
     return object : ViewModelProvider.Factory {

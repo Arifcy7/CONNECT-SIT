@@ -4,10 +4,8 @@ import android.app.Application
 import com.example.connectsit.data.di.AppModuleImpl
 import com.example.connectsit.data.model.AppModule
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
-class MyApplication: Application() {
+class MyApplication : Application() {
 
     companion object {
         lateinit var appModule: AppModule
