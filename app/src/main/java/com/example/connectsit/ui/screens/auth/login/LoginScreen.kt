@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.connectsit.ui.screens.auth
+package com.example.connectsit.ui.screens.auth.login
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
@@ -23,51 +23,63 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.alexafit.fitjournal.core.presentation.commoncomponents.dialogs.LoadingScreenDialog
 import com.example.connectsit.R
-import com.example.connectsit.ui.model.Enterers
 import com.example.connectsit.core.theme.White
+import com.example.connectsit.ui.model.Enterers
+import com.example.connectsit.ui.model.login.LoginModel
+import com.example.connectsit.ui.model.login.LoginState
 import kotlinx.coroutines.delay
-
-typealias Username = String
-typealias Password = String
 
 @Composable
 fun LoginScreen(
-    enterer: Enterers,
-    handleLogin: (Username, Password, (Boolean) -> Unit) -> Unit
+    loginState: LoginState,
+    handleLogin: (LoginModel) -> Unit
 ) {
     val email = remember { mutableStateOf(value = "") }
     val password = remember { mutableStateOf(value = "") }
     val emailFocusRequester = FocusRequester()
     val passwordFocusRequester = FocusRequester()
-    val loginFailed = remember { mutableStateOf(false) }
+    var loginFailed by remember { mutableStateOf(false) }
 
     // Shake animation
     val shakeAnimation = rememberInfiniteTransition()
     val shakeOffset by shakeAnimation.animateFloat(
         initialValue = 0f,
-        targetValue = if (loginFailed.value) 10f else 0f,
+        targetValue = if (loginFailed) 10f else 0f,
         animationSpec = infiniteRepeatable(
             animation = tween(50, easing = FastOutLinearInEasing),
             repeatMode = RepeatMode.Reverse
-        )
+        ), label = "Shake screen"
     )
 
-    LaunchedEffect(loginFailed.value) {
-        if (loginFailed.value) {
-            delay(3000) // 3 seconds
-            loginFailed.value = false
+    LaunchedEffect(loginFailed) {
+        if (loginFailed) {
+            delay(300) // 3 seconds
+            loginFailed = false
         }
     }
 
+    if (loginState.showLoadingScreen) {
+        LoadingScreenDialog(
+            onBackPress = {}
+        )
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.Black)
-            .offset(x = if (loginFailed.value) shakeOffset.dp else 0.dp), // Apply the shake offset
+            .offset {
+                IntOffset(
+                    (if (loginFailed) shakeOffset.dp else 0.dp)
+                        .toPx()
+                        .toInt(), 0
+                )
+            }, // Apply the shake offset
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -83,7 +95,7 @@ fun LoginScreen(
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "LOGIN AS $enterer", color = White)
+        Text(text = "LOGIN AS ${loginState.userType.name}", color = White)
         Spacer(modifier = Modifier.height(16.dp))
 
         EmailTextField(
@@ -101,17 +113,25 @@ fun LoginScreen(
 
         LoginButton(
             onClick = {
-                handleLogin(email.value, password.value) { success ->
-                    loginFailed.value = !success // Trigger shake animation on failure
-                }
+                handleLogin(
+                    LoginModel(
+                        email = email.value,
+                        password = password.value,
+                        userType = loginState.userType,
+                        onLoginErrorCallback = { showErrorAnimation ->
+                            loginFailed = showErrorAnimation
+                        }
+                    )
+                )
             }
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        ForgotPasswordText(enterer = enterer)
+        ForgotPasswordText(enterer = loginState.userType)
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailTextField(
     email: MutableState<String>,
@@ -198,6 +218,7 @@ fun ForgotPasswordText(enterer: Enterers) {
         Enterers.STUDENT -> {
             Text(text = "IF FORGET PASSWORD CONTACT YOUR TEACHERS", color = White)
         }
+
         Enterers.TEACHER -> {
             Text(
                 modifier = Modifier
@@ -205,6 +226,7 @@ fun ForgotPasswordText(enterer: Enterers) {
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
+
         Enterers.ADMIN -> {
             Text(
                 modifier = Modifier.clickable { },
