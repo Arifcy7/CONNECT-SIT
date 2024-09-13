@@ -2,6 +2,10 @@ package com.example.connectsit.ui.screens.teacher
 
 
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 
 import androidx.compose.material.icons.filled.Menu
@@ -43,7 +47,7 @@ fun TeacherPortalScreen() {
                 ),
                 title = {
                     Text(
-                        "CREATE MODULES",
+                        "YOUR COURSES",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -64,7 +68,13 @@ fun TeacherPortalScreen() {
         },
 
     ) { innerPadding ->
-        (innerPadding)
+        Column(modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()
+            .background(color = Color.Black)) {
+
+
+        }
     }
 
 

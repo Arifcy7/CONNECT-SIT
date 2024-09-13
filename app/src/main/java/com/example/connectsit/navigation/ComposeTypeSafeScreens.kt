@@ -43,3 +43,7 @@ object ScreenI
 //teacher manage
 @Serializable
 object ScreenJ
+
+//upload screen
+@Serializable
+object ScreenK
