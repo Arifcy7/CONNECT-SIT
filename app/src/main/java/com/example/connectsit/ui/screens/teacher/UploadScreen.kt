@@ -1,13 +1,19 @@
 package com.example.connectsit.ui.screens.teacher
 
 
+import android.widget.ProgressBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -15,6 +21,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -69,8 +76,7 @@ fun UploadScreen(navController: NavController){
         ) { innerPadding ->
         Surface(modifier = Modifier
             .padding(innerPadding)
-            .background(color = Color.Black)
-            .size(500.dp)
+            .size(600.dp)
                 ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center) {
@@ -85,15 +91,25 @@ fun UploadScreen(navController: NavController){
                     modifier = Modifier.padding(16.dp)
                 )
                     Button(onClick = { /*TODO*/ },modifier = Modifier
-                        .size(width = 180.dp, height = 120.dp),
+                        .size(width = 180.dp, height = 50.dp),
                         colors = androidx.compose.material3.ButtonDefaults
                             .buttonColors(containerColor = Bluish)) {
                         Text(text = "UPLOAD")
                     }
+                    Spacer(modifier = Modifier.height(16.dp))
+                        LinearProgressIndicator(
+                            progress = 0.5f,
+                            modifier = Modifier.fillMaxWidth()
+                                .width(20.dp)
+                                .background(color = Color.White)
+                                .padding(16.dp),
+                            color = Color.Blue
+                        )
 
-                    //PROGRESS BAR OF THINGS THAT HAD BEEN DONE UPLOADING
+
+                //PROGRESS BAR OF THINGS THAT HAD BEEN DONE UPLOADING
+                //viewing all file uploaded till now
             }
-
 
 
         }
