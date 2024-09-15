@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.connectsit.R
+import com.example.connectsit.navigation.ScreenC
 import com.example.connectsit.navigation.ScreenK
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +62,7 @@ fun UploadScreen(navController: NavController){
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(ScreenK) }) {
+                    IconButton(onClick = { navController.navigate(ScreenC) }) {
                         Icon(
                             tint = Color.White,
                             imageVector = Icons.Filled.ArrowBack,

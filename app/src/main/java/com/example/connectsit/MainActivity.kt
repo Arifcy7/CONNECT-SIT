@@ -125,7 +125,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable<ScreenC> {
-                    TeacherPortalScreen()
+                    TeacherPortalScreen(navController)
                 }
 
                 composable<ScreenD> {
