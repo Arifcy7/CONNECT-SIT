@@ -36,9 +36,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.connectsit.R
 import com.example.connectsit.navigation.ScreenK
 
@@ -106,9 +109,9 @@ fun UploadChoices(category: String,navController: NavController){
     val Bluish = Color(0xFF523EC8)
     val Buttoncolo = Color(0xFF2A1C9F)
         Row(modifier = Modifier
-        .size(width = 400.dp, height = 250.dp)
-        .padding(horizontal = 20.dp, vertical = 20.dp)
-        .background(color = Bluish, shape = RoundedCornerShape(20.dp))) {
+            .size(width = 400.dp, height = 220.dp)
+            .padding(horizontal = 20.dp, vertical = 20.dp)
+            .background(color = Bluish, shape = RoundedCornerShape(20.dp))) {
         when (category) {
             "notices" -> Image(
                 painter = painterResource(id = R.drawable.notices), contentDescription = "info",
@@ -143,7 +146,7 @@ fun UploadChoices(category: String,navController: NavController){
             )
             Button(
                 onClick = { navController.navigate(ScreenK) }, modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 20.dp),
+                    .padding(horizontal = 20.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Buttoncolo)
             ) {
                 Text(text = "UPLOAD")
