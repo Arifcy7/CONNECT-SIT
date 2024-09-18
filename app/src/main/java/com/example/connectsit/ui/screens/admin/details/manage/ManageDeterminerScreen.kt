@@ -46,7 +46,7 @@ fun ManageDeterminerScreen(navController: NavController) {
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue,
                 contentColor = Color.White
-            ), modifier = Modifier.size(width = 160.dp, height = 40.dp)
+            ), modifier = Modifier.size(width = 165.dp, height = 40.dp)
             ) {
             Text(text = "Manage Students")
         }
@@ -56,12 +56,12 @@ fun ManageDeterminerScreen(navController: NavController) {
                 containerColor = Color.Blue,
                 contentColor = Color.White
             ),
-            modifier = Modifier.size(width = 160.dp, height = 40.dp)) {
+            modifier = Modifier.size(width = 165.dp, height = 40.dp)) {
             Text(text = "Manage Teachers")
             Modifier.background(color = Color.Blue)
         }
         val context = LocalContext.current
-
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
                 // Launch the AdminActivity using Intent
@@ -73,7 +73,7 @@ fun ManageDeterminerScreen(navController: NavController) {
                 containerColor = Color.Blue,
                 contentColor = Color.White
             ),
-            modifier = Modifier.size(width = 160.dp, height = 40.dp)
+            modifier = Modifier.size(width = 165.dp, height = 40.dp)
         ) {
             Text(text = "Manage Courses")
             Modifier.background(color = Color.Blue)
@@ -86,3 +86,4 @@ fun ManageDeterminerScreen(navController: NavController) {
 
 
 }
+

@@ -2,162 +2,153 @@ package com.example.connectsit.ui.screens.teacher
 
 
 
-import androidx.compose.foundation.Image
+import android.content.ContentValues.TAG
+import android.os.Parcel
+import android.os.Parcelable
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-
-
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.connectsit.R
-import com.example.connectsit.navigation.ScreenK
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QueryDocumentSnapshot
+import kotlinx.coroutines.tasks.await
 
+
+data class Courses(
+    var id: String,
+    var courseName: String,
+    var teacherUsername: String
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeacherPortalScreen(navController: NavController) {
     val Bluish = Color(0xFF523EC8)
-        val i = 0
-        var ModuleCounter = 1
-        val Modules = listOf("Module 1", "Module 2", "Module 3", "Module 4", "Module 5")
-        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-        Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            topBar = {
-                CenterAlignedTopAppBar(
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Bluish,
-                        titleContentColor = Color.White,
-                    ),
-                    title = {
-                        Text(
-                            "YOUR COURSES",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(
-                                tint = Color.White,
-                                imageVector = Icons.Filled.Menu,
-                                contentDescription = "Localized description"
-
-                            )
-                        }
-                    },
-                    scrollBehavior = scrollBehavior,
-
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Bluish,
+                    titleContentColor = Color.White,
+                ),
+                title = {
+                    Text(
+                        "YOUR COURSES",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-            },
-
-            ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()
-                    .background(color = Color.Black),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.size(20.dp))
-                UploadChoices("notices", navController)
-                UploadChoices(" notes", navController)
-                UploadChoices(" other", navController)
-            }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { /* do something */ }) {
+                        Icon(
+                            tint = Color.White,
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior,
+            )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(color = Color.Black)
+        ) {
+            Spacer(modifier = Modifier.size(40.dp))
+            CoursesList()
         }
+    }
 }
 
-fun yourCourses(){
-
+suspend fun GetData(): List<Courses> {
+    val db = FirebaseFirestore.getInstance()
+    return try {
+        db.collection("Courses").get().await()
+            .map { it: QueryDocumentSnapshot ->
+                Courses(
+                    id = it.id,
+                    courseName = it.getString("courseName")!!,
+                    teacherUsername = it.getString("teacherUsername")!!
+                )
+            }
+    } catch (e: FirebaseFirestoreException) {
+        Log.d("TAG", "getDataFromFirestore: $e")
+        emptyList()
+    }
 }
+
 @Composable
-fun UploadChoices(category: String,navController: NavController){
-    val Bluish = Color(0xFF523EC8)
-    val Buttoncolo = Color(0xFF2A1C9F)
-    Row(modifier = Modifier
-            .size(width = 400.dp, height = 220.dp)
-            .padding(horizontal = 20.dp, vertical = 20.dp)
-            .background(color = Bluish, shape = RoundedCornerShape(20.dp))) {
-        when (category) {
-            "notices" -> Image(
-                painter = painterResource(id = R.drawable.notices), contentDescription = "info",
-                modifier = Modifier
-                    .padding(horizontal = 17.dp, vertical = 25.dp)
-                    .clip(RoundedCornerShape(20))
-            )
+fun CoursesList() {
+    val context = LocalContext.current
+    var isLoading by remember { mutableStateOf(true) }
+    var coursesList by remember { mutableStateOf<List<Courses>>(emptyList()) }
 
-            " notes" -> Image(
-                painter = painterResource(id = R.drawable.notes), contentDescription = "info",
-                modifier = Modifier
-                    .padding(horizontal = 17.dp, vertical = 25.dp)
-                    .clip(RoundedCornerShape(20))
-            )
+    LaunchedEffect(Unit) {
+        val data = GetData()
+        coursesList = data
+        isLoading = false
+    }
 
-            " other" -> Image(
-                painter = painterResource(id = R.drawable.other), contentDescription = "info",
-                modifier = Modifier
-                    .padding(horizontal = 17.dp, vertical = 25.dp)
-                    .clip(RoundedCornerShape(20))
-            )
-
-
-        }
-        Column() {
-            Text(
-                text = category.toUpperCase(),
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 30.sp,
-                modifier = Modifier.padding(horizontal = 17.dp, vertical = 30.dp)
-            )
-            Button(
-                onClick = { navController.navigate(ScreenK) }, modifier = Modifier
-                    .padding(horizontal = 20.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Buttoncolo)
-            ) {
-                Text(text = "UPLOAD")
+    if (isLoading) {
+        CircularProgressIndicator()
+    } else {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(coursesList) { course ->
+                Text(text = course.courseName, modifier = Modifier.padding(16.dp), color = Color.White)
             }
-
         }
+    }
 }
+
+@Preview
+@Composable
+fun CoursesListPreview() {
+    TeacherPortalScreen(navController = NavController(context = LocalContext.current))
 }
-
-
-
-
-
-
