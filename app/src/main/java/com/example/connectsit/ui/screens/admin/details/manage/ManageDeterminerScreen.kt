@@ -1,5 +1,7 @@
 package com.example.connectsit.ui.screens.admin.details.manage
 
+import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,6 +60,25 @@ fun ManageDeterminerScreen(navController: NavController) {
             Text(text = "Manage Teachers")
             Modifier.background(color = Color.Blue)
         }
+        val context = LocalContext.current
+
+        Button(
+            onClick = {
+                // Launch the AdminActivity using Intent
+                Log.d("CoursesError", "ManageDeterminerScreen: This Button Works")
+                val intent = Intent(context, AdminActivity::class.java)
+                context.startActivity(intent)
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Blue,
+                contentColor = Color.White
+            ),
+            modifier = Modifier.size(width = 160.dp, height = 40.dp)
+        ) {
+            Text(text = "Manage Courses")
+            Modifier.background(color = Color.Blue)
+        }
+
     }
 
 

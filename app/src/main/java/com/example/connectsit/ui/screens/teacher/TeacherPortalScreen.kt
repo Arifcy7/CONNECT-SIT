@@ -108,7 +108,7 @@ fun yourCourses(){
 fun UploadChoices(category: String,navController: NavController){
     val Bluish = Color(0xFF523EC8)
     val Buttoncolo = Color(0xFF2A1C9F)
-        Row(modifier = Modifier
+    Row(modifier = Modifier
             .size(width = 400.dp, height = 220.dp)
             .padding(horizontal = 20.dp, vertical = 20.dp)
             .background(color = Bluish, shape = RoundedCornerShape(20.dp))) {
