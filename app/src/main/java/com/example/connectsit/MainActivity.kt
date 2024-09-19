@@ -85,12 +85,18 @@ class MainActivity : ComponentActivity() {
                                 enterer = loginViewModel.loginState.userType,
                                 onSuccess = { user ->
                                     when (user) {
-                                        Enterers.TEACHER -> navController.navigate(ScreenC) {
-                                            //removing login from back stack
-                                            popUpTo(ScreenA) {
-                                                inclusive = true
+                                        Enterers.TEACHER -> {
+                                            // Save username to SharedPreferences
+                                            val sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                                            with (sharedPref.edit()) {
+                                                putString("username", loginModel.username)
+                                                apply()
+                                            }
+                                            navController.navigate(ScreenC) {
+                                                popUpTo(ScreenA) { inclusive = true }
                                             }
                                         }
+
                                         Enterers.STUDENT -> navController.navigate(ScreenD) {
                                             popUpTo(ScreenA) {
                                                 inclusive = true
