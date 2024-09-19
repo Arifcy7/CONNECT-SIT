@@ -24,7 +24,7 @@ class LoginViewModel(
     )
 
     fun loginUser(
-        email: String,
+        username: String,
         password: String,
         enterer: Enterers,
         onSuccess: (Enterers?) -> Unit,
@@ -38,7 +38,7 @@ class LoginViewModel(
                 Enterers.STUDENT -> "Students"
             }
             useFirebaseToLogin(
-                email = email,
+                username = username,
                 password = password,
                 enterer = enterer,
                 collection = collection,
@@ -49,7 +49,7 @@ class LoginViewModel(
     }
 
     private fun useFirebaseToLogin(
-        email: String,
+        username: String,
         password: String,
         enterer: Enterers,
         collection: String,
@@ -57,7 +57,7 @@ class LoginViewModel(
         onFailure: (String) -> Unit
     ) {
         firebaseDb.collection(collection)
-            .whereEqualTo("email", email)
+            .whereEqualTo("username", username)
             .whereEqualTo(
                 "password",
                 password

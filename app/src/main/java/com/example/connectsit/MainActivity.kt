@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
                         loginState = loginViewModel.loginState,
                         handleLogin = { loginModel ->
                             loginViewModel.loginUser(
-                                email = loginModel.email,
+                                username = loginModel.username,
                                 password = loginModel.password,
                                 enterer = loginViewModel.loginState.userType,
                                 onSuccess = { user ->

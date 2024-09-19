@@ -34,14 +34,16 @@ import com.example.connectsit.ui.model.login.LoginModel
 import com.example.connectsit.ui.model.login.LoginState
 import kotlinx.coroutines.delay
 
+
+
 @Composable
 fun LoginScreen(
     loginState: LoginState,
     handleLogin: (LoginModel) -> Unit
 ) {
-    val email = remember { mutableStateOf(value = "") }
+    val username = remember { mutableStateOf(value = "") }
     val password = remember { mutableStateOf(value = "") }
-    val emailFocusRequester = FocusRequester()
+    val usernameFocusRequester = FocusRequester()
     val passwordFocusRequester = FocusRequester()
     var loginFailed by remember { mutableStateOf(false) }
 
@@ -98,9 +100,9 @@ fun LoginScreen(
         Text(text = "LOGIN AS ${loginState.userType.name}", color = White)
         Spacer(modifier = Modifier.height(16.dp))
 
-        EmailTextField(
-            email = email,
-            emailFocusRequester = emailFocusRequester,
+        UsernameTextField(
+            username = username,
+            usernameFocusRequester = usernameFocusRequester,
             passwordFocusRequester = passwordFocusRequester
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -115,7 +117,7 @@ fun LoginScreen(
             onClick = {
                 handleLogin(
                     LoginModel(
-                        email = email.value,
+                        username = username.value,
                         password = password.value,
                         userType = loginState.userType,
                         onLoginErrorCallback = { showErrorAnimation ->
@@ -133,26 +135,26 @@ fun LoginScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmailTextField(
-    email: MutableState<String>,
-    emailFocusRequester: FocusRequester,
+fun UsernameTextField(
+    username: MutableState<String>,
+    usernameFocusRequester: FocusRequester,
     passwordFocusRequester: FocusRequester
 ) {
     OutlinedTextField(
-        value = email.value,
-        onValueChange = { email.value = it },
+        value = username.value,
+        onValueChange = { username.value = it },
         label = {
-            Text(text = "Email Address", color = White)
+            Text(text = "Username", color = White)
         },
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Next,
-            keyboardType = KeyboardType.Email
+            keyboardType = KeyboardType.Text
         ),
         keyboardActions = KeyboardActions(
             onNext = { passwordFocusRequester.requestFocus() }
         ),
         modifier = Modifier
-            .focusRequester(emailFocusRequester)
+            .focusRequester(usernameFocusRequester)
             .onFocusChanged { focusState ->
                 // No operation needed
             },
