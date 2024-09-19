@@ -86,7 +86,6 @@ class MainActivity : ComponentActivity() {
                                 onSuccess = { user ->
                                     when (user) {
                                         Enterers.TEACHER -> {
-                                            // Save username to SharedPreferences
                                             val sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE)
                                             with (sharedPref.edit()) {
                                                 putString("username", loginModel.username)
@@ -97,9 +96,14 @@ class MainActivity : ComponentActivity() {
                                             }
                                         }
 
-                                        Enterers.STUDENT -> navController.navigate(ScreenD) {
-                                            popUpTo(ScreenA) {
-                                                inclusive = true
+                                        Enterers.STUDENT ->  {
+                                            val sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                                            with (sharedPref.edit()) {
+                                                putString("username", loginModel.username)
+                                                apply()
+                                            }
+                                            navController.navigate(ScreenD){
+                                            popUpTo(ScreenA) { inclusive = true }
                                             }
                                         }
                                         Enterers.ADMIN -> navController.navigate(ScreenE) {
