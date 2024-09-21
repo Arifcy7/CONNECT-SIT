@@ -47,3 +47,11 @@ object ScreenJ
 //upload screen
 @Serializable
 object ScreenK
+
+//upload option for teacher
+@Serializable
+object ScreenL
+
+//upload option for student
+@Serializable
+object ScreenM

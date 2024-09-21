@@ -3,6 +3,7 @@ package com.example.connectsit.ui.screens.student
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,10 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.connectsit.navigation.ScreenM
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
@@ -71,7 +75,7 @@ fun StudentPortalScreen(navController: NavController) {
                 .background(color = Color.Black)
         ) {
             Spacer(modifier = Modifier.size(40.dp))
-            CoursesList(context)
+            CoursesList(context,navController)
         }
     }
 }
@@ -98,7 +102,7 @@ suspend fun GetData(studentUsername: String): List<Courses> {
 }
 
 @Composable
-fun CoursesList(context: Context) {
+fun CoursesList(context: Context,navController: NavController) {
     var isLoading by remember { mutableStateOf(true) }
     var coursesList by remember { mutableStateOf<List<Courses>>(emptyList()) }
 
@@ -133,8 +137,18 @@ fun CoursesList(context: Context) {
                 items(coursesList) { course ->
                     Text(
                         text = course.courseName,
-                        modifier = Modifier.padding(16.dp),
-                        color = Color.White
+                        modifier = Modifier.padding(16.dp)
+                            .clickable {
+                                val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                                with (sharedPref.edit()) {
+                                    putString("courseName", course.courseName)
+                                    apply()
+                                }
+                                navController.navigate(ScreenM)
+                            },
+                        color = Color.White,
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -142,8 +156,3 @@ fun CoursesList(context: Context) {
     }
 }
 
-@Preview
-@Composable
-fun CoursesListPreview() {
-    StudentPortalScreen(navController = NavController(context = LocalContext.current))
-}
