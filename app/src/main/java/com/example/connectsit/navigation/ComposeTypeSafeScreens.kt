@@ -55,3 +55,7 @@ object ScreenL
 //upload option for student
 @Serializable
 object ScreenM
+
+//pdf screen
+@Serializable
+object ScreenN

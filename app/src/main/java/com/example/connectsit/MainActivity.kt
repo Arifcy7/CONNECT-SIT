@@ -23,6 +23,7 @@ import com.example.connectsit.navigation.ScreenJ
 import com.example.connectsit.navigation.ScreenK
 import com.example.connectsit.navigation.ScreenL
 import com.example.connectsit.navigation.ScreenM
+import com.example.connectsit.navigation.ScreenN
 import com.example.connectsit.ui.model.Enterers
 import com.example.connectsit.ui.screens.admin.AdminPortalScreen
 import com.example.connectsit.ui.screens.admin.details.StudentDetails
@@ -33,6 +34,7 @@ import com.example.connectsit.ui.screens.admin.details.manage.ManageTeacher
 import com.example.connectsit.ui.screens.auth.login.LoginScreen
 import com.example.connectsit.ui.screens.auth.StudentTeacherDeterminerScreen
 import com.example.connectsit.ui.screens.auth.login.LoginViewModel
+import com.example.connectsit.ui.screens.student.PdfScreen
 import com.example.connectsit.ui.screens.student.StudentOptions
 import com.example.connectsit.ui.screens.student.StudentPortalScreen
 import com.example.connectsit.ui.screens.teacher.TeacherOptions
@@ -174,6 +176,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable<ScreenM> {
                     StudentOptions(navController)
+                }
+                composable<ScreenN> {
+                    PdfScreen(navController)
                 }
             }
         }

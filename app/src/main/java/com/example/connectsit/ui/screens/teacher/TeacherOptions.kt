@@ -92,7 +92,7 @@ fun UploadChoices(category: String, navController: NavController) {
             "notices" -> R.drawable.notices
             "notes" -> R.drawable.notes
             "other" -> R.drawable.other
-            else -> R.drawable.notices // Default image
+            else -> R.drawable.imgi // Default image
         }
         Image(
             painter = painterResource(id = imageRes),
@@ -117,6 +117,7 @@ fun UploadChoices(category: String, navController: NavController) {
                 val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
                 with (sharedPref.edit()) {
                     putString("courseName", courseName)
+                    putString("category", category)
                     apply()
                 }
                 Text(text = "UPLOAD")

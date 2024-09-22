@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.connectsit.R
-import com.example.connectsit.navigation.ScreenK
+import com.example.connectsit.navigation.ScreenN
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +42,7 @@ fun StudentOptions(navController: NavController) {
                 ),
                 title = {
                     Text(
-                        "$courseName",
+                        courseName,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -103,25 +103,26 @@ fun UploadChoices(category: String, navController: NavController) {
         )
         Column {
             Text(
-                text = category.toUpperCase(),
+                text = category.uppercase(),
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp,
                 modifier = Modifier.padding(horizontal = 17.dp, vertical = 30.dp)
             )
             Button(
-                onClick = {  },
+                onClick = {
+                    with(sharedPref.edit()) {
+                        putString("courseName", courseName)
+                        putString("category", category)
+                        apply()
+                    }
+                    navController.navigate(ScreenN)
+                },
                 modifier = Modifier.padding(horizontal = 20.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Buttoncolo)
             ) {
-                val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-                with (sharedPref.edit()) {
-                    putString("courseName", courseName)
-                    apply()
-                }
-                Text(text = "UPLOAD")
+                Text(text = "VIEW")
             }
         }
     }
 }
-
