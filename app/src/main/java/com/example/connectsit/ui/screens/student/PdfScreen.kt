@@ -1,21 +1,25 @@
 package com.example.connectsit.ui.screens.student
 
 import android.content.Context
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.connectsit.R
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -61,13 +65,15 @@ fun PdfScreen(navController: NavController) {
     ) { innerPadding ->
         Box(modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding)) {
+            .padding(innerPadding)
+            .background(color = Color.Black)) {
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else if (pdfList.isEmpty()) {
                 Text(
                     "No PDFs available for this course and category.",
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center),
+                    color = Color.White
                 )
             } else {
                 LazyColumn {
@@ -90,7 +96,7 @@ fun PdfListItem(pdf: PdfFile) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = Icons.Default.PlayArrow,
+            imageVector = Icons.Default.PictureAsPdf,
             contentDescription = "PDF Icon",
             tint = Color.Red
         )
@@ -111,7 +117,7 @@ private fun getCategory(context: Context): String {
 
 private suspend fun fetchPdfList(courseName: String, category: String): List<PdfFile> {
     val storage: FirebaseStorage = Firebase.storage
-    val storageRef: StorageReference = storage.reference.child("pdfs/$category/$courseName")
+    val storageRef: StorageReference = storage.reference.child("pdfs/$courseName/$category")
 
     return try {
         val result = storageRef.listAll().await()
@@ -119,6 +125,7 @@ private suspend fun fetchPdfList(courseName: String, category: String): List<Pdf
             PdfFile(
                 name = item.name,
                 downloadUrl = item.downloadUrl.await().toString()
+
             )
         }
     } catch (e: Exception) {
@@ -126,3 +133,4 @@ private suspend fun fetchPdfList(courseName: String, category: String): List<Pdf
         emptyList()
     }
 }
+
