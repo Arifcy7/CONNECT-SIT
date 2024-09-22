@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -25,7 +27,6 @@ import com.example.connectsit.R
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,12 +37,54 @@ fun UploadScreen(navController: NavController) {
     var uploadProgress by remember { mutableStateOf(0f) }
     var isUploading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var fileName by remember { mutableStateOf("") }
+    var showNamingDialog by remember { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         selectedFileUri = uri
-        errorMessage = null // Clear any previous error messages
+        errorMessage = null
+        if (uri != null) {
+            showNamingDialog = true
+        }
+    }
+
+    if (showNamingDialog) {
+        AlertDialog( modifier = Modifier.background(color = Color.Black),
+            onDismissRequest = { showNamingDialog = false },
+            title = { Text("Name Your File") },
+            text = {
+                OutlinedTextField(
+                    value = fileName,
+                    onValueChange = { fileName = it },
+                    label = { Text("File Name") },
+                    singleLine = true
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (fileName.isNotBlank()) {
+                            showNamingDialog = false
+                        }
+                    }, colors = ButtonDefaults.buttonColors(containerColor = Bluish, contentColor = Color.White)
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                TextButton( colors = ButtonDefaults.buttonColors(containerColor = Bluish, contentColor = Color.White),
+                    onClick = {
+                        showNamingDialog = false
+                        selectedFileUri = null
+                        fileName = ""
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 
     Scaffold(
@@ -67,18 +110,19 @@ fun UploadScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(color = Color.Black),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Image(
                 painter = painterResource(id = R.drawable.img_2),
-                contentDescription = "Upload Image",
+                contentDescription = "Upload Pdfs",
                 modifier = Modifier.clickable { launcher.launch("application/pdf") }
             )
             Text(
-                text = if (selectedFileUri != null) "PDF Selected" else "CLICK TO UPLOAD",
-                color = Color.Black,
+                text = if (selectedFileUri != null) "PDF Selected: $fileName" else "CLICK TO UPLOAD",
+                color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp,
                 modifier = Modifier.padding(16.dp)
@@ -87,8 +131,8 @@ fun UploadScreen(navController: NavController) {
                 onClick = {
                     selectedFileUri?.let { uri ->
                         isUploading = true
-                        errorMessage = null // Clear any previous error messages
-                        uploadPdfToFirebase(uri, context,
+                        errorMessage = null
+                        uploadPdfToFirebase(uri, context, fileName,
                             onProgressUpdate = { progress ->
                                 uploadProgress = progress
                                 if (progress >= 1f) {
@@ -103,10 +147,13 @@ fun UploadScreen(navController: NavController) {
                     }
                 },
                 modifier = Modifier.size(width = 180.dp, height = 50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Bluish),
-                enabled = selectedFileUri != null && !isUploading
+                colors = ButtonDefaults.buttonColors(containerColor = Bluish,
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.Blue.copy(alpha = 0.5f),
+                    disabledContentColor = Color.White.copy(alpha = 0.5f)),
+                enabled = selectedFileUri != null && !isUploading && fileName.isNotBlank()
             ) {
-                Text(text = if (isUploading) "UPLOADING..." else "UPLOAD")
+                Text(text = if (isUploading) "UPLOADING..." else "UPLOAD", color = Color.White)
             }
             Spacer(modifier = Modifier.height(16.dp))
             if (isUploading) {
@@ -115,14 +162,15 @@ fun UploadScreen(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(20.dp)
-                        .padding(horizontal = 16.dp),
-                    color = Color.Blue
+                        .padding(horizontal = 16.dp)
+                        .background(color = Color.White),
+                    color = Bluish
                 )
             }
             errorMessage?.let { error ->
                 Text(
                     text = error,
-                    color = Color.Red,
+                    color = Color.White,
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -133,6 +181,7 @@ fun UploadScreen(navController: NavController) {
 fun uploadPdfToFirebase(
     fileUri: Uri,
     context: Context,
+    fileName: String,
     onProgressUpdate: (Float) -> Unit,
     onError: (String) -> Unit
 ) {
@@ -141,8 +190,8 @@ fun uploadPdfToFirebase(
     val category = sharedPref.getString("category", "") ?: ""
     val storage: FirebaseStorage = Firebase.storage
     val storageRef = storage.reference
-    val fileName = "${UUID.randomUUID()}.pdf"
-    val pdfRef = storageRef.child("pdfs/$category/$courseName/$fileName")
+    val safeFileName = "${fileName.replace("[^a-zA-Z0-9.-]".toRegex(), "_")}.pdf"
+    val pdfRef = storageRef.child("pdfs/$courseName/$category/$safeFileName")
 
     pdfRef.putFile(fileUri)
         .addOnProgressListener { taskSnapshot ->
@@ -160,3 +209,9 @@ fun uploadPdfToFirebase(
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
         }
 }
+@Preview
+@Composable
+fun UploadScreenPreview() {
+    UploadScreen(navController = NavController(LocalContext.current))
+}
+
