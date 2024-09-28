@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -55,6 +56,13 @@ fun TeacherOptions(navController: NavController) {
                             imageVector = Icons.Filled.Menu,
                             contentDescription = "Localized description"
                         )
+                    }
+                },
+                actions = { //LOGOUT OPTION YAHA DENA HAI
+                    IconButton(onClick = { /* do something */ }) {
+                        Icon(tint = Color.White,
+                            imageVector = Icons.Default.Logout,
+                            contentDescription = "LOG OUT")
                     }
                 },
                 scrollBehavior = scrollBehavior,

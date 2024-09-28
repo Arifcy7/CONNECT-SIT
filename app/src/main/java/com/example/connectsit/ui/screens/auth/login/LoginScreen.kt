@@ -113,6 +113,10 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        RememberMeCheckbox(rememberMe = remember { mutableStateOf(false) })
+        Spacer(modifier = Modifier.height(16.dp))
+
+
         LoginButton(
             onClick = {
                 handleLogin(
@@ -236,5 +240,29 @@ fun ForgotPasswordText(enterer: Enterers) {
                 text = "FORGET PASSWORD?", color = White
             )
         }
+    }
+}
+
+@Composable
+fun RememberMeCheckbox(rememberMe: MutableState<Boolean>) {
+    Row(
+        horizontalArrangement = Arrangement.Absolute.Left,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable { rememberMe.value = !rememberMe.value }
+    ) {
+        Checkbox(
+            checked = rememberMe.value,
+            onCheckedChange = { rememberMe.value = it },
+            colors = CheckboxDefaults.colors(
+                checkedColor = Color.Blue,
+                uncheckedColor = White,
+                checkmarkColor = White
+            )
+        )
+        Text(
+            text = "Remember Me",
+            color = White,
+            fontSize = 18.sp
+        )
     }
 }
