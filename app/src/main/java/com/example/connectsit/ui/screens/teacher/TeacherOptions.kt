@@ -1,6 +1,7 @@
 package com.example.connectsit.ui.screens.teacher
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -110,16 +111,23 @@ fun UploadChoices(category: String, navController: NavController) {
                 modifier = Modifier.padding(horizontal = 17.dp, vertical = 30.dp)
             )
             Button(
-                onClick = { navController.navigate(ScreenK) },
+                onClick = {
+                    // Save to shared preferences first
+                    val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                    with(sharedPref.edit()) {
+                        putString("courseName", courseName)
+                        putString("category", category)
+                        apply()
+                        }
+                    Log.d("UploadChoices", "Navigating with category: $category and courseName: $courseName")
+                    // Now navigate to the UploadScreen with the selected category
+                    navController.navigate(ScreenK.createUploadRoute(category))
+                    Log.d("UploadChoices", "Navigation called for category: $category")
+
+                },
                 modifier = Modifier.padding(horizontal = 20.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Buttoncolo)
             ) {
-                val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-                with (sharedPref.edit()) {
-                    putString("courseName", courseName)
-                    putString("category", category)
-                    apply()
-                }
                 Text(text = "UPLOAD")
             }
         }
