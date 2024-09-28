@@ -2,6 +2,8 @@ package com.example.connectsit.ui.screens.teacher
 
 import android.content.Context
 import android.net.Uri
+import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,7 +32,8 @@ import com.google.firebase.storage.ktx.storage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UploadScreen(navController: NavController) {
+fun UploadScreen(navController: NavController, category: String) {
+    Log.d("UploadScreen", "Received category: $category")
     val Bluish = Color(0xFF523EC8)
     val context = LocalContext.current
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
@@ -121,7 +124,10 @@ fun UploadScreen(navController: NavController) {
                 modifier = Modifier.clickable { launcher.launch("application/pdf") }
             )
             Text(
-                text = if (selectedFileUri != null) "PDF Selected: $fileName" else "CLICK TO UPLOAD",
+                text = if (selectedFileUri != null) {
+                    "PDF Selected: $fileName\nCategory: $category"
+                } else {
+                    "CLICK TO UPLOAD\nCategory: $category"},
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp,
@@ -146,6 +152,7 @@ fun UploadScreen(navController: NavController) {
                         )
                     }
                 },
+
                 modifier = Modifier.size(width = 180.dp, height = 50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Bluish,
                     contentColor = Color.White,
@@ -153,6 +160,7 @@ fun UploadScreen(navController: NavController) {
                     disabledContentColor = Color.White.copy(alpha = 0.5f)),
                 enabled = selectedFileUri != null && !isUploading && fileName.isNotBlank()
             ) {
+                Log.d("crasherror", "UploadScreen: Failed2")
                 Text(text = if (isUploading) "UPLOADING..." else "UPLOAD", color = Color.White)
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -207,11 +215,22 @@ fun uploadPdfToFirebase(
             val errorMessage = "Upload failed: ${exception.localizedMessage}"
             onError(errorMessage)
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            Log.d("crasherror", "UploadScreen: Failed3")
+
         }
 }
+
 @Preview
 @Composable
 fun UploadScreenPreview() {
-    UploadScreen(navController = NavController(LocalContext.current))
+    // Simulating different categories for preview
+    val categories = listOf("notes", "notices", "other")
+    Log.d("crasherror", "UploadScreen: Failed4")
+
+    for (category in categories) {
+        UploadScreen(navController = NavController(LocalContext.current), category = category)
+    }
 }
+
+
 

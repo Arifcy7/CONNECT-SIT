@@ -46,7 +46,13 @@ object ScreenJ
 
 //upload screen
 @Serializable
-object ScreenK
+object ScreenK {
+    const val UploadScreen = "upload_screen/{category}"
+
+    fun createUploadRoute(category: String) : String{
+        return "upload_screen/$category"
+    }
+}
 
 //upload option for teacher
 @Serializable

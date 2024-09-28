@@ -1,6 +1,7 @@
 package com.example.connectsit
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -168,10 +169,13 @@ class MainActivity : ComponentActivity() {
                 composable<ScreenJ> {
                     ManageTeacher(navController)
                 }
-                composable<ScreenK> {
-                    UploadScreen(navController)
+                composable(ScreenK.UploadScreen) { backStackEntry ->
+                    val category = backStackEntry.arguments?.getString("category")
+                    Log.d("NavHost", "Navigating to UploadScreen with category: $category")
+                    UploadScreen(navController = navController, category = category ?: "others")
                 }
                 composable<ScreenL> {
+
                     TeacherOptions(navController)
                 }
                 composable<ScreenM> {
