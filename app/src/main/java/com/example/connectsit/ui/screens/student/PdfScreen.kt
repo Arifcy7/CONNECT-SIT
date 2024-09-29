@@ -1,6 +1,7 @@
 package com.example.connectsit.ui.screens.student
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,10 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.connectsit.R
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -35,12 +34,24 @@ fun PdfScreen(navController: NavController) {
     val context = LocalContext.current
     var pdfList by remember { mutableStateOf<List<PdfFile>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(key1 = Unit) {
         val courseName = getCourseName(context)
         val category = getCategory(context)
-        pdfList = fetchPdfList(courseName, category)
-        isLoading = false
+        Log.d("PdfScreen", "Fetching PDFs for course: $courseName, category: $category")
+        try {
+            pdfList = fetchPdfList(courseName, category)
+            Log.d("PdfScreen", "Fetched ${pdfList.size} PDFs")
+            if (pdfList.isEmpty()) {
+                errorMessage = "No PDFs found for this course and category."
+            }
+        } catch (e: Exception) {
+            Log.e("PdfScreen", "Error fetching PDF list", e)
+            errorMessage = "Error loading PDFs: ${e.localizedMessage}"
+        } finally {
+            isLoading = false
+        }
     }
 
     Scaffold(
@@ -67,16 +78,19 @@ fun PdfScreen(navController: NavController) {
             .fillMaxSize()
             .padding(innerPadding)
             .background(color = Color.Black)) {
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else if (pdfList.isEmpty()) {
-                Text(
+            when {
+                isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                errorMessage != null -> Text(
+                    errorMessage!!,
+                    modifier = Modifier.align(Alignment.Center),
+                    color = Color.Red
+                )
+                pdfList.isEmpty() -> Text(
                     "No PDFs available for this course and category.",
                     modifier = Modifier.align(Alignment.Center),
                     color = Color.White
                 )
-            } else {
-                LazyColumn {
+                else -> LazyColumn {
                     items(pdfList) { pdf ->
                         PdfListItem(pdf = pdf)
                     }
@@ -101,7 +115,7 @@ fun PdfListItem(pdf: PdfFile) {
             tint = Color.Red
         )
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = pdf.name)
+        Text(text = pdf.name, color = Color.White)
     }
 }
 
@@ -116,21 +130,21 @@ private fun getCategory(context: Context): String {
 }
 
 private suspend fun fetchPdfList(courseName: String, category: String): List<PdfFile> {
+    Log.d("PdfScreen", "Attempting to fetch PDFs from path: pdfs/$courseName/$category")
     val storage: FirebaseStorage = Firebase.storage
     val storageRef: StorageReference = storage.reference.child("pdfs/$courseName/$category")
 
     return try {
         val result = storageRef.listAll().await()
+        Log.d("PdfScreen", "Successfully listed ${result.items.size} items")
         result.items.map { item ->
             PdfFile(
                 name = item.name,
                 downloadUrl = item.downloadUrl.await().toString()
-
             )
         }
     } catch (e: Exception) {
-        e.printStackTrace()
-        emptyList()
+        Log.e("PdfScreen", "Error fetching PDF list", e)
+        throw e
     }
 }
-

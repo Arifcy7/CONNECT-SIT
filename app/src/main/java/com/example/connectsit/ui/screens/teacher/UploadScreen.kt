@@ -2,7 +2,6 @@ package com.example.connectsit.ui.screens.teacher
 
 import android.content.Context
 import android.net.Uri
-import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -21,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -54,7 +52,8 @@ fun UploadScreen(navController: NavController, category: String) {
     }
 
     if (showNamingDialog) {
-        AlertDialog( modifier = Modifier.background(color = Color.Black),
+        AlertDialog(
+            modifier = Modifier.background(color = Color.Black),
             onDismissRequest = { showNamingDialog = false },
             title = { Text("Name Your File") },
             text = {
@@ -71,13 +70,15 @@ fun UploadScreen(navController: NavController, category: String) {
                         if (fileName.isNotBlank()) {
                             showNamingDialog = false
                         }
-                    }, colors = ButtonDefaults.buttonColors(containerColor = Bluish, contentColor = Color.White)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Bluish, contentColor = Color.White)
                 ) {
                     Text("Confirm")
                 }
             },
             dismissButton = {
-                TextButton( colors = ButtonDefaults.buttonColors(containerColor = Bluish, contentColor = Color.White),
+                TextButton(
+                    colors = ButtonDefaults.buttonColors(containerColor = Bluish, contentColor = Color.White),
                     onClick = {
                         showNamingDialog = false
                         selectedFileUri = null
@@ -127,7 +128,8 @@ fun UploadScreen(navController: NavController, category: String) {
                 text = if (selectedFileUri != null) {
                     "PDF Selected: $fileName\nCategory: $category"
                 } else {
-                    "CLICK TO UPLOAD\nCategory: $category"},
+                    "CLICK TO UPLOAD\nCategory: $category"
+                },
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp,
@@ -138,7 +140,7 @@ fun UploadScreen(navController: NavController, category: String) {
                     selectedFileUri?.let { uri ->
                         isUploading = true
                         errorMessage = null
-                        uploadPdfToFirebase(uri, context, fileName,
+                        uploadPdfToFirebase(uri, context, fileName, category,
                             onProgressUpdate = { progress ->
                                 uploadProgress = progress
                                 if (progress >= 1f) {
@@ -152,15 +154,15 @@ fun UploadScreen(navController: NavController, category: String) {
                         )
                     }
                 },
-
                 modifier = Modifier.size(width = 180.dp, height = 50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Bluish,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Bluish,
                     contentColor = Color.White,
                     disabledContainerColor = Color.Blue.copy(alpha = 0.5f),
-                    disabledContentColor = Color.White.copy(alpha = 0.5f)),
+                    disabledContentColor = Color.White.copy(alpha = 0.5f)
+                ),
                 enabled = selectedFileUri != null && !isUploading && fileName.isNotBlank()
             ) {
-                Log.d("crasherror", "UploadScreen: Failed2")
                 Text(text = if (isUploading) "UPLOADING..." else "UPLOAD", color = Color.White)
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -178,7 +180,7 @@ fun UploadScreen(navController: NavController, category: String) {
             errorMessage?.let { error ->
                 Text(
                     text = error,
-                    color = Color.White,
+                    color = Color.Red,
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -190,12 +192,14 @@ fun uploadPdfToFirebase(
     fileUri: Uri,
     context: Context,
     fileName: String,
+    category: String,
     onProgressUpdate: (Float) -> Unit,
     onError: (String) -> Unit
 ) {
     val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
     val courseName = sharedPref.getString("courseName", "") ?: ""
-    val category = sharedPref.getString("category", "") ?: ""
+    Log.d("UploadScreen", "Uploading PDF for course: $courseName, category: $category")
+
     val storage: FirebaseStorage = Firebase.storage
     val storageRef = storage.reference
     val safeFileName = "${fileName.replace("[^a-zA-Z0-9.-]".toRegex(), "_")}.pdf"
@@ -205,32 +209,18 @@ fun uploadPdfToFirebase(
         .addOnProgressListener { taskSnapshot ->
             val progress = taskSnapshot.bytesTransferred.toFloat() / taskSnapshot.totalByteCount.toFloat()
             onProgressUpdate(progress)
+            Log.d("UploadScreen", "Upload progress: ${progress * 100}%")
         }
         .addOnSuccessListener {
             onProgressUpdate(1f)
+            Log.d("UploadScreen", "Upload successful: $safeFileName")
             Toast.makeText(context, "Upload successful", Toast.LENGTH_SHORT).show()
         }
         .addOnFailureListener { exception ->
             onProgressUpdate(0f)
             val errorMessage = "Upload failed: ${exception.localizedMessage}"
+            Log.e("UploadScreen", errorMessage, exception)
             onError(errorMessage)
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
-            Log.d("crasherror", "UploadScreen: Failed3")
-
         }
 }
-
-@Preview
-@Composable
-fun UploadScreenPreview() {
-    // Simulating different categories for preview
-    val categories = listOf("notes", "notices", "other")
-    Log.d("crasherror", "UploadScreen: Failed4")
-
-    for (category in categories) {
-        UploadScreen(navController = NavController(LocalContext.current), category = category)
-    }
-}
-
-
-
