@@ -67,6 +67,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.messaging.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,30 +1,24 @@
 package com.example.connectsit
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.ActivityResultLauncher
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.connectsit.navigation.ScreenA
-import com.example.connectsit.navigation.ScreenB
-import com.example.connectsit.navigation.ScreenC
-import com.example.connectsit.navigation.ScreenD
-import com.example.connectsit.navigation.ScreenE
-import com.example.connectsit.navigation.ScreenF
-import com.example.connectsit.navigation.ScreenG
-import com.example.connectsit.navigation.ScreenH
-import com.example.connectsit.navigation.ScreenI
-import com.example.connectsit.navigation.ScreenJ
-import com.example.connectsit.navigation.ScreenK
-import com.example.connectsit.navigation.ScreenL
-import com.example.connectsit.navigation.ScreenM
-import com.example.connectsit.navigation.ScreenN
+import com.example.connectsit.navigation.*
 import com.example.connectsit.ui.model.Enterers
 import com.example.connectsit.ui.screens.admin.AdminPortalScreen
 import com.example.connectsit.ui.screens.admin.details.StudentDetails
@@ -45,10 +39,27 @@ import com.example.connectsit.ui.util.viewModelFactory
 
 class MainActivity : ComponentActivity() {
 
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge()
+
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+
+                createNotificationChannel()
+                Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                // Permission denied, notify the user accordingly
+                Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+        requestNotificationPermission()
 
         setContent {
 
@@ -57,6 +68,7 @@ class MainActivity : ComponentActivity() {
                 navController = navController,
                 startDestination = ScreenA
             ) {
+                // Your composable routes as they are...
                 composable<ScreenA> {
                     StudentTeacherDeterminerScreen(
                         handleNavigation = { enterer ->
@@ -110,7 +122,7 @@ class MainActivity : ComponentActivity() {
                                                 apply()
                                             }
                                             navController.navigate(ScreenD){
-                                            popUpTo(ScreenA) { inclusive = true }
+                                                popUpTo(ScreenA) { inclusive = true }
                                             }
                                         }
                                         Enterers.ADMIN -> navController.navigate(ScreenE) {
@@ -140,6 +152,7 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
+
 
                 composable<ScreenC> {
                     TeacherPortalScreen(navController)
@@ -175,7 +188,6 @@ class MainActivity : ComponentActivity() {
                     UploadScreen(navController = navController, category = category ?: "others")
                 }
                 composable<ScreenL> {
-
                     TeacherOptions(navController)
                 }
                 composable<ScreenM> {
@@ -187,4 +199,49 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    //  Function to request notification permission if the app is targeting Android 13+
+    private fun requestNotificationPermission() {
+        // Check if the permission is already granted
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    // Permission is granted
+                    createNotificationChannel()
+                }
+                else -> {
+                    // Request the permission
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        } else {
+
+            createNotificationChannel()
+        }
+    }
+
+
+    //  notification channel
+    private fun createNotificationChannel() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val name = "YourNotificationChannel"
+                val descriptionText = "Channel for your app notifications"
+                val importance = NotificationManager.IMPORTANCE_DEFAULT
+                val channel = NotificationChannel("CHANNEL_ID", name, importance).apply {
+                    description = descriptionText
+                }
+                val notificationManager: NotificationManager =
+                    ContextCompat.getSystemService(this, NotificationManager::class.java) as NotificationManager
+                notificationManager.createNotificationChannel(channel)
+            }
+        } catch (e: SecurityException) {
+            Log.e("Notification", "Failed to create notification channel: ${e.message}")
+
+        }
+    }
+
 }
