@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -63,6 +66,13 @@ fun TeacherPortalScreen(navController: NavController) {
                             imageVector = Icons.Filled.Menu,
                             contentDescription = "Localized description"
                         )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { /* do something */ }) {
+                        Icon(imageVector = Icons.Default.Logout, contentDescription ="Log Out"
+                            , tint = Color.White)
+
                     }
                 },
                 scrollBehavior = scrollBehavior,
@@ -136,20 +146,37 @@ fun CoursesList(context: Context,navController: NavController) {
         else -> {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(coursesList) { course ->
-                    Text(
-                        text = course.courseName,
-                        modifier = Modifier.padding(16.dp)
+                    Divider(color = Color.White)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .clickable {
-                                val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-                                with (sharedPref.edit()) {
+                                val sharedPref =
+                                    context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                                with(sharedPref.edit()) {
                                     putString("courseName", course.courseName)
                                     apply()
                                 }
-                                navController.navigate(ScreenL) },
-                        color = Color.White,
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                                navController.navigate(ScreenL)
+                            }
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = course.courseName,
+                            color = Color.White,
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = "see course",
+                            tint = Color.White,
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+                    Divider(color = Color.White)
                 }
             }
         }
