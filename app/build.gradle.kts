@@ -84,7 +84,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("androidx.compose.material:material-icons-extended:<version>")
     implementation("com.google.firebase:firebase-messaging:23.1.2")
-
+    implementation("androidx.browser:browser:1.4.0")
+    implementation("androidx.core:core-ktx:1.7.0")
 
 
 

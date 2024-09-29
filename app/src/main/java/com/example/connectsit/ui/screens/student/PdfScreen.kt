@@ -1,7 +1,10 @@
 package com.example.connectsit.ui.screens.student
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -92,7 +96,7 @@ fun PdfScreen(navController: NavController) {
                 )
                 else -> LazyColumn {
                     items(pdfList) { pdf ->
-                        PdfListItem(pdf = pdf)
+                        PdfListItem(pdf = pdf,context=context)
                     }
                 }
             }
@@ -101,11 +105,11 @@ fun PdfScreen(navController: NavController) {
 }
 
 @Composable
-fun PdfListItem(pdf: PdfFile) {
+fun PdfListItem(pdf: PdfFile,context: Context) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* TODO: Implement PDF viewing or downloading */ }
+            .clickable { openPdfViewer(context, pdf.downloadUrl) }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -118,6 +122,20 @@ fun PdfListItem(pdf: PdfFile) {
         Text(text = pdf.name, color = Color.White)
     }
 }
+private fun openPdfViewer(context: Context, pdfUrl: String) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(Uri.parse(pdfUrl), "application/pdf")
+        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
+    try {
+        startActivity(context, intent, null)
+        Toast.makeText(context, "Opening...", Toast.LENGTH_SHORT).show()
+
+    } catch (e: Exception) {
+        Log.e("PdfViewer", "Error opening PDF viewer", e)
+    }
+}
+
 
 private fun getCourseName(context: Context): String {
     val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
