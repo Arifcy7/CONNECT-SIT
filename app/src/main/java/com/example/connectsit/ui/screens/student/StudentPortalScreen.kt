@@ -169,10 +169,11 @@ fun CoursesList(context: Context,navController: NavController) {
                         Text(
                             text = course.courseName,
                             modifier = Modifier
-                                .padding(16.dp),
+                                .padding(16.dp)
+                                .weight(1f),
                             color = Color.White,
                             fontSize = 25.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                         Icon(
                             imageVector = Icons.Default.PlayArrow,
