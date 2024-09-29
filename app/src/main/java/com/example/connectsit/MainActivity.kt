@@ -32,6 +32,7 @@ import com.example.connectsit.ui.screens.auth.login.LoginViewModel
 import com.example.connectsit.ui.screens.student.PdfScreen
 import com.example.connectsit.ui.screens.student.StudentOptions
 import com.example.connectsit.ui.screens.student.StudentPortalScreen
+import com.example.connectsit.ui.screens.teacher.AboutPage
 import com.example.connectsit.ui.screens.teacher.TeacherOptions
 import com.example.connectsit.ui.screens.teacher.TeacherPortalScreen
 import com.example.connectsit.ui.screens.teacher.UploadScreen
@@ -195,6 +196,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable<ScreenN> {
                     PdfScreen(navController)
+                }
+                composable<ScreenO> {
+                    AboutPage(navController)
                 }
             }
         }

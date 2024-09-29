@@ -65,3 +65,7 @@ object ScreenM
 //pdf screen
 @Serializable
 object ScreenN
+
+//about page
+@Serializable
+object ScreenO

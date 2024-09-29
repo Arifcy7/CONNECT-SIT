@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.connectsit.navigation.ScreenL
+import com.example.connectsit.navigation.ScreenO
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QueryDocumentSnapshot
@@ -60,10 +62,10 @@ fun TeacherPortalScreen(navController: NavController) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = { navController.navigate(ScreenO) }) {
                         Icon(
                             tint = Color.White,
-                            imageVector = Icons.Filled.Menu,
+                            imageVector = Icons.Filled.QuestionMark,
                             contentDescription = "Localized description"
                         )
                     }
