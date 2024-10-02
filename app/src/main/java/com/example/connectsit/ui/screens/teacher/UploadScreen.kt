@@ -20,10 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.connectsit.R
+import com.example.connectsit.navigation.ScreenP
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -40,6 +42,8 @@ fun UploadScreen(navController: NavController, category: String) {
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var fileName by remember { mutableStateOf("") }
     var showNamingDialog by remember { mutableStateOf(false) }
+    val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+    val courseName = sharedPref.getString("courseName", "") ?: ""
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -156,14 +160,24 @@ fun UploadScreen(navController: NavController, category: String) {
                 },
                 modifier = Modifier.size(width = 180.dp, height = 50.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Bluish,
+                    containerColor = Color.Blue,
                     contentColor = Color.White,
-                    disabledContainerColor = Color.Blue.copy(alpha = 0.5f),
+                    disabledContainerColor = Color.Blue,
                     disabledContentColor = Color.White.copy(alpha = 0.5f)
                 ),
                 enabled = selectedFileUri != null && !isUploading && fileName.isNotBlank()
             ) {
                 Text(text = if (isUploading) "UPLOADING..." else "UPLOAD", color = Color.White)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { navController.navigate(ScreenP) },
+                colors = ButtonColors(containerColor = Color.Blue,
+                contentColor = Color.White,
+                disabledContentColor = Color.White.copy(alpha = 0.5f),
+                disabledContainerColor = Color.Blue.copy(alpha = 0.5f)),
+                modifier = Modifier.size(width = 180.dp, height = 50.dp)) {
+                Text(text = "Uploaded $category", color = Color.White)
+
             }
             Spacer(modifier = Modifier.height(16.dp))
             if (isUploading) {
@@ -223,4 +237,9 @@ fun uploadPdfToFirebase(
             onError(errorMessage)
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
         }
+}
+@Preview
+@Composable
+fun Previewit(){
+    UploadScreen(navController = NavController(LocalContext.current), category = "Notes")
 }

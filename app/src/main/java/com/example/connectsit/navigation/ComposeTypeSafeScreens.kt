@@ -69,3 +69,7 @@ object ScreenN
 //about page
 @Serializable
 object ScreenO
+
+//Uploaded Things can be viewed here by teaccher
+@Serializable
+object ScreenP

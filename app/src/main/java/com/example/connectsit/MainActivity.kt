@@ -36,6 +36,7 @@ import com.example.connectsit.ui.screens.teacher.AboutPage
 import com.example.connectsit.ui.screens.teacher.TeacherOptions
 import com.example.connectsit.ui.screens.teacher.TeacherPortalScreen
 import com.example.connectsit.ui.screens.teacher.UploadScreen
+import com.example.connectsit.ui.screens.teacher.ViewUploaded
 import com.example.connectsit.ui.util.viewModelFactory
 
 class MainActivity : ComponentActivity() {
@@ -199,6 +200,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable<ScreenO> {
                     AboutPage(navController)
+                }
+                composable<ScreenP> {
+                    ViewUploaded(navController)
                 }
             }
         }
