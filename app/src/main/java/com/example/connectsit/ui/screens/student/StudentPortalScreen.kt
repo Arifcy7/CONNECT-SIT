@@ -163,7 +163,7 @@ fun CoursesList(context: Context,navController: NavController) {
                                 }
                                 navController.navigate(ScreenM)
                             }
-                            .padding(16.dp),
+                            .padding(10.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -172,14 +172,14 @@ fun CoursesList(context: Context,navController: NavController) {
                                 .padding(16.dp)
                                 .weight(1f),
                             color = Color.White,
-                            fontSize = 25.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                         )
                         Icon(
                             imageVector = Icons.Default.PlayArrow,
                             contentDescription = "see course",
                             tint = Color.White,
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(26.dp)
 
                         )
 
@@ -192,3 +192,8 @@ fun CoursesList(context: Context,navController: NavController) {
     }
 }
 
+@Preview
+@Composable
+fun prev(){
+    StudentPortalScreen(navController = NavController(LocalContext.current))
+}
