@@ -11,7 +11,6 @@
         </intent>
     </queries>
 
-
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -27,14 +26,10 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/imgi" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/purple_700" />
 
-
-        <!-- Main Activity Declaration -->
         <activity
             android:name="MainActivity"
             android:exported="true"
@@ -45,7 +40,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Admin Activity Declaration -->
         <activity
             android:name=".ui.screens.admin.details.manage.AdminActivity"
             android:exported="true"
@@ -59,6 +53,5 @@
         </service>
 
     </application>
-
 
 </manifest>

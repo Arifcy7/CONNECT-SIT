@@ -1,11 +1,6 @@
 package com.example.connectsit.ui.screens.student
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,13 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.tasks.await
+import com.example.connectsit.utils.downloadPdf
+import com.example.connectsit.utils.fetchPdfList
+import com.example.connectsit.utils.getCategory
+import com.example.connectsit.utils.getCourseName
+import com.example.connectsit.utils.openPdfViewer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 data class PdfFile(val name: String, val downloadUrl: String)
 
@@ -43,15 +39,14 @@ fun PdfScreen(navController: NavController) {
     LaunchedEffect(key1 = Unit) {
         val courseName = getCourseName(context)
         val category = getCategory(context)
-        Log.d("PdfScreen", "Fetching PDFs for course: $courseName, category: $category")
         try {
-            pdfList = fetchPdfList(courseName, category)
-            Log.d("PdfScreen", "Fetched ${pdfList.size} PDFs")
+            // Fetch PDFs and map to the correct type
+            val fetchedPdfList = fetchPdfList(courseName, category)
+            pdfList = fetchedPdfList.map { mapToStudentPdfFile(it) }
             if (pdfList.isEmpty()) {
                 errorMessage = "No PDFs found for this course and category."
             }
         } catch (e: Exception) {
-            Log.e("PdfScreen", "Error fetching PDF list", e)
             errorMessage = "Error loading PDFs: ${e.localizedMessage}"
         } finally {
             isLoading = false
@@ -96,7 +91,7 @@ fun PdfScreen(navController: NavController) {
                 )
                 else -> LazyColumn {
                     items(pdfList) { pdf ->
-                        PdfListItem(pdf = pdf,context=context)
+                        PdfListItem(pdf = pdf, context = context)
                     }
                 }
             }
@@ -105,64 +100,31 @@ fun PdfScreen(navController: NavController) {
 }
 
 @Composable
-fun PdfListItem(pdf: PdfFile,context: Context) {
+fun PdfListItem(pdf: PdfFile, context: Context) {
+    val coroutineScope = rememberCoroutineScope()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { openPdfViewer(context, pdf.downloadUrl) }
+            .clickable {
+                coroutineScope.launch {
+                    openPdfViewer(context, pdf.downloadUrl)
+                    // Initiate download
+                    downloadPdf(context, pdf.downloadUrl, pdf.name)
+                }
+            }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Default.PictureAsPdf,
-            contentDescription = "PDF Icon",
-            tint = Color.Red
-        )
-        Spacer(modifier = Modifier.width(16.dp))
+        Icon(imageVector = Icons.Filled.PictureAsPdf, contentDescription = "PDF Icon", tint = Color.White)
+        Spacer(modifier = Modifier.width(8.dp))
         Text(text = pdf.name, color = Color.White)
     }
 }
-private fun openPdfViewer(context: Context, pdfUrl: String) {
-    val intent = Intent(Intent.ACTION_VIEW).apply {
-        setDataAndType(Uri.parse(pdfUrl), "application/pdf")
-        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-    }
-    try {
-        startActivity(context, intent, null)
-        Toast.makeText(context, "Opening...", Toast.LENGTH_SHORT).show()
 
-    } catch (e: Exception) {
-        Log.e("PdfViewer", "Error opening PDF viewer", e)
-    }
-}
-
-
-private fun getCourseName(context: Context): String {
-    val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-    return sharedPref.getString("courseName", "") ?: ""
-}
-
-private fun getCategory(context: Context): String {
-    val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-    return sharedPref.getString("category", "") ?: ""
-}
-
-private suspend fun fetchPdfList(courseName: String, category: String): List<PdfFile> {
-    Log.d("PdfScreen", "Attempting to fetch PDFs from path: pdfs/$courseName/$category")
-    val storage: FirebaseStorage = Firebase.storage
-    val storageRef: StorageReference = storage.reference.child("pdfs/$courseName/$category")
-
-    return try {
-        val result = storageRef.listAll().await()
-        Log.d("PdfScreen", "Successfully listed ${result.items.size} items")
-        result.items.map { item ->
-            PdfFile(
-                name = item.name,
-                downloadUrl = item.downloadUrl.await().toString()
-            )
-        }
-    } catch (e: Exception) {
-        Log.e("PdfScreen", "Error fetching PDF list", e)
-        throw e
-    }
+fun mapToStudentPdfFile(pdfFile: com.example.connectsit.utils.PdfFile): PdfFile {
+    return PdfFile(
+        name = pdfFile.name,
+        downloadUrl = pdfFile.downloadUrl
+    )
 }
