@@ -102,15 +102,16 @@ fun PdfScreen(navController: NavController) {
 @Composable
 fun PdfListItem(pdf: PdfFile, context: Context) {
     val coroutineScope = rememberCoroutineScope()
+    var isDownloading by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
                 coroutineScope.launch {
-                    openPdfViewer(context, pdf.downloadUrl)
-                    // Initiate download
-                    downloadPdf(context, pdf.downloadUrl, pdf.name)
+                    isDownloading = true
+                    openPdfViewer(context, pdf.downloadUrl, pdf.name)
+                    isDownloading = false
                 }
             }
             .padding(16.dp),
@@ -118,9 +119,15 @@ fun PdfListItem(pdf: PdfFile, context: Context) {
     ) {
         Icon(imageVector = Icons.Filled.PictureAsPdf, contentDescription = "PDF Icon", tint = Color.White)
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = pdf.name, color = Color.White)
+        Column {
+            Text(text = pdf.name, color = Color.White)
+            if (isDownloading) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
+        }
     }
 }
+
 
 fun mapToStudentPdfFile(pdfFile: com.example.connectsit.utils.PdfFile): PdfFile {
     return PdfFile(
