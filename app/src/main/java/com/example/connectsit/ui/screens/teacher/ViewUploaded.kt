@@ -36,7 +36,7 @@ fun ViewUploaded(navController: NavController) {
     var pdfList by remember { mutableStateOf<List<PdfFile>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-
+    val cat = getCategory(context)
     LaunchedEffect(key1 = Unit) {
         val courseName = getCourseName(context)
         val category = getCategory(context)
@@ -45,7 +45,7 @@ fun ViewUploaded(navController: NavController) {
             pdfList = fetchAllPdfList(courseName,category)
             Log.d("ViewUploaded", "Fetched ${pdfList.size} PDFs")
             if (pdfList.isEmpty()) {
-                errorMessage = "No PDFs found for this course."
+                errorMessage = "Nothing found for this course."
             }
         } catch (e: Exception) {
             Log.e("ViewUploaded", "Error fetching PDF list", e)
@@ -62,7 +62,7 @@ fun ViewUploaded(navController: NavController) {
                     containerColor = Bluish,
                     titleContentColor = Color.White,
                 ),
-                title = { Text("UPLOADED PDFs") },
+                title = { Text("UPLOADED $cat.toUppercase()") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -134,7 +134,7 @@ fun UploadedPdfListItem(pdf: PdfFile, onDelete: () -> Unit, onView: () -> Unit) 
         IconButton(onClick = onDelete) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = "Delete PDF",
+                contentDescription = "Delete notes",
                 tint = Color.Red
             )
         }

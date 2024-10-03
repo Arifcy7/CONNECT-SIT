@@ -44,7 +44,7 @@ fun PdfScreen(navController: NavController) {
             val fetchedPdfList = fetchPdfList(courseName, category)
             pdfList = fetchedPdfList.map { mapToStudentPdfFile(it) }
             if (pdfList.isEmpty()) {
-                errorMessage = "No PDFs found for this course and category."
+                errorMessage = "Nothing found for this course and category."
             }
         } catch (e: Exception) {
             errorMessage = "Error loading PDFs: ${e.localizedMessage}"
@@ -60,7 +60,7 @@ fun PdfScreen(navController: NavController) {
                     containerColor = Bluish,
                     titleContentColor = Color.White,
                 ),
-                title = { Text("PDF LIST") },
+                title = { Text("LIST") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -85,7 +85,7 @@ fun PdfScreen(navController: NavController) {
                     color = Color.Red
                 )
                 pdfList.isEmpty() -> Text(
-                    "No PDFs available for this course and category.",
+                    "Nothing available for this course and category.",
                     modifier = Modifier.align(Alignment.Center),
                     color = Color.White
                 )

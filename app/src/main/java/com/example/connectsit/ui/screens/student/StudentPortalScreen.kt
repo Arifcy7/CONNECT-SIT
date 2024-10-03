@@ -192,8 +192,3 @@ fun CoursesList(context: Context,navController: NavController) {
     }
 }
 
-@Preview
-@Composable
-fun prev(){
-    StudentPortalScreen(navController = NavController(LocalContext.current))
-}

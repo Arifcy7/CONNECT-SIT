@@ -238,8 +238,3 @@ fun uploadPdfToFirebase(
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
         }
 }
-@Preview
-@Composable
-fun Previewit(){
-    UploadScreen(navController = NavController(LocalContext.current), category = "Notes")
-}

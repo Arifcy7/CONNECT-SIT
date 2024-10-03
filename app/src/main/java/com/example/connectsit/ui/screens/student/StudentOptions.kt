@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.connectsit.R
+import com.example.connectsit.navigation.ScreenA
+import com.example.connectsit.navigation.ScreenB
 import com.example.connectsit.navigation.ScreenD
 import com.example.connectsit.navigation.ScreenN
 
@@ -61,7 +63,7 @@ fun StudentOptions(navController: NavController) {
                 },
                 actions = { //LOGOUT OPTION YAHA DENA HAI
 
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = { navController.navigate(ScreenA) }) {
                         Icon(tint = Color.White,
 
                             imageVector = Icons.Default.Logout,
