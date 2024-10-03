@@ -62,7 +62,7 @@ fun ViewUploaded(navController: NavController) {
                     containerColor = Bluish,
                     titleContentColor = Color.White,
                 ),
-                title = { Text("UPLOADED $cat.toUppercase()") },
+                title = { Text("UPLOADED ${cat.uppercase()}") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
