@@ -1,3 +1,3 @@
 ## Check Out Our Application Screenshots and features
 
-!GitHub release 
+https://github.com/Arifcy7/CONNECT-SIT/releases/tag/1.0v
