@@ -1,4 +1,4 @@
-![Blue Modern Mobile Application Presentation_page-0001](https://github.com/user-attachments/assets/556d073d-5b97-45c0-bfba-aa99ab8b86af)
+![Blue Modern Mobile Application Presentation (1)_page-0001](https://github.com/user-attachments/assets/bcfb417f-6d0c-4ac9-819a-6042d6bb07fe)
 
 ![Blue Modern Mobile Application Presentation_page-0002](https://github.com/user-attachments/assets/4edc2a1e-c8d3-4145-a5ac-a5647af99172)
 
