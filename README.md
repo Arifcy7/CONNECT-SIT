@@ -23,3 +23,5 @@ CONNECT-SIT is an educational application designed to facilitate structured note
 ![Blue Modern Mobile Application Presentation_page-0005](https://github.com/user-attachments/assets/7ec7e93f-6d93-4926-a90c-40dea6b71952)
 
 Overall, CONNECT-SIT aims to create an organized platform for educational content sharing, potentially improving communication and resource distribution between teachers and students.
+
+Developers :- Arif Chaudhary , Nishant Dakua , Alex
