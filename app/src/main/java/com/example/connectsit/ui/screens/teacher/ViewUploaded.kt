@@ -25,6 +25,13 @@ import androidx.navigation.NavController
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.*
+import java.net.URL
+import java.util.zip.GZIPInputStream
+import java.util.zip.GZIPOutputStream
 
 data class PdfFile(val name: String, val downloadUrl: String, val category: String)
 
@@ -102,7 +109,7 @@ fun ViewUploaded(navController: NavController) {
                                 }
                             },
                             onView = {
-                                openPdfViewer(context, pdf.downloadUrl)
+                                openPdfViewer(context, pdf.downloadUrl, pdf.name)
                             }
                         )
                     }
@@ -113,7 +120,9 @@ fun ViewUploaded(navController: NavController) {
 }
 
 @Composable
-fun UploadedPdfListItem(pdf: PdfFile, onDelete: () -> Unit, onView: () -> Unit) {
+fun UploadedPdfListItem(pdf: PdfFile, onDelete: () -> Unit, onView: suspend () -> Unit) {
+    val coroutineScope = rememberCoroutineScope()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,7 +133,13 @@ fun UploadedPdfListItem(pdf: PdfFile, onDelete: () -> Unit, onView: () -> Unit) 
             Text(text = pdf.name, color = Color.White)
             Text(text = "Category: ${pdf.category}", color = Color.Gray, style = MaterialTheme.typography.bodySmall)
         }
-        IconButton(onClick = onView) {
+        IconButton(
+            onClick = {
+                coroutineScope.launch {
+                    onView() // Call onView in a coroutine
+                }
+            }
+        ) {
             Icon(
                 imageVector = Icons.Default.Visibility,
                 contentDescription = "View PDF",
@@ -156,28 +171,89 @@ private fun deletePdf(pdf: PdfFile, context: Context, onDeleteSuccess: () -> Uni
     }
 }
 
-private fun openPdfViewer(context: Context, pdfUrl: String) {
+// Added GZIP Compression and Cache handling in the openPdfViewer function
+private suspend fun openPdfViewer(context: Context, pdfUrl: String, pdfName: String) {
+    val cacheDir = context.cacheDir
+    val compressedFile = File(cacheDir, "$pdfName.gz")
+
+    // Check if the compressed file is already cached
+    if (compressedFile.exists()) {
+        // Decompress and open the PDF
+        val decompressedFile = decompressGzipFile(compressedFile, cacheDir, pdfName)
+        openPdfFromFile(context, decompressedFile)
+    } else {
+        // Download, compress, and cache the file
+        withContext(Dispatchers.IO) {
+            try {
+                val downloadedFile = downloadPdf(pdfUrl, cacheDir, pdfName)
+                compressFile(downloadedFile, compressedFile)
+                openPdfFromFile(context, downloadedFile)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Opening PDF...", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("PdfViewer", "Error opening PDF", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Error downloading or opening PDF.", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+}
+
+private fun openPdfFromFile(context: Context, file: File) {
     val intent = Intent(Intent.ACTION_VIEW).apply {
-        setDataAndType(Uri.parse(pdfUrl), "application/pdf")
+        setDataAndType(Uri.fromFile(file), "application/pdf")
         flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
     }
     try {
         startActivity(context, intent, null)
-        Toast.makeText(context, "Opening PDF...", Toast.LENGTH_SHORT).show()
     } catch (e: Exception) {
         Log.e("PdfViewer", "Error opening PDF viewer", e)
-        Toast.makeText(context, "Error opening PDF. No PDF viewer app found.", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "No PDF viewer app found.", Toast.LENGTH_LONG).show()
     }
+}
+
+private fun compressFile(inputFile: File, compressedFile: File) {
+    FileInputStream(inputFile).use { fis ->
+        FileOutputStream(compressedFile).use { fos ->
+            GZIPOutputStream(fos).use { gzipOut ->
+                fis.copyTo(gzipOut)
+            }
+        }
+    }
+}
+
+private fun decompressGzipFile(gzippedFile: File, cacheDir: File, outputName: String): File {
+    val outputFile = File(cacheDir, outputName)
+    GZIPInputStream(FileInputStream(gzippedFile)).use { gzipIn ->
+        FileOutputStream(outputFile).use { fos ->
+            gzipIn.copyTo(fos)
+        }
+    }
+    return outputFile
+}
+
+private fun downloadPdf(pdfUrl: String, cacheDir: File, pdfName: String): File {
+    val pdfFile = File(cacheDir, pdfName)
+    URL(pdfUrl).openStream().use { input ->
+        FileOutputStream(pdfFile).use { output ->
+            input.copyTo(output)
+        }
+    }
+    return pdfFile
 }
 
 private fun getCourseName(context: Context): String {
     val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
     return sharedPref.getString("courseName", "") ?: ""
 }
+
 private fun getCategory(context: Context): String {
     val sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
     return sharedPref.getString("category", "") ?: ""
 }
+
 private suspend fun fetchAllPdfList(courseName: String, category: String): List<PdfFile> {
     Log.d("ViewUploaded", "Attempting to fetch all PDFs for course: $courseName, category: $category")
     val storage = Firebase.storage
@@ -195,5 +271,4 @@ private suspend fun fetchAllPdfList(courseName: String, category: String): List<
     } catch (e: Exception) {
         Log.e("ViewUploaded", "Error fetching PDF list", e)
         throw e
-    }
-}
+    }}
